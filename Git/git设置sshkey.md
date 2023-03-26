@@ -13,7 +13,7 @@ git config --global user.email "这里换上你的邮箱"
 ssh-keygen -t ed25519 -C "这里换上你的邮箱"
 ```
 
-![](z_assets/Pasted%20image%2020230325200543.png)
+![](assets/Pasted%20image%2020230325200543.png)
 
 ## 复制 .pub 内容到 github
 

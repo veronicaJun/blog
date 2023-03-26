@@ -22,8 +22,8 @@
 
 ## 原型链图解
 
-![原型链](2023-03-26-18-21-07.png)
-![原型链](2023-03-26-18-02-29.png)
+![原型链](./assets/2023-03-26-18-21-07.png)
+![原型链](./assets/2023-03-26-18-02-29.png)
 
 注：
 Function.__proto__ === Function.prototype
@@ -33,20 +33,20 @@ Object.prototype === null
 
 ```js
 //原型链的验证
-function Persion(){}
-var p = new Persion();
+function Person(){}
+var p = new Person();
 
-console.log("🐶 ~~ p.constructor === Persion:", p.constructor === Persion)
+console.log("🐶 ~~ p.constructor === Person:", p.constructor === Person)
 
-console.log("🐶 ~~ p.__proto__ === Persion.prototype:", p.__proto__ === Persion.prototype)
+console.log("🐶 ~~ p.__proto__ === Person.prototype:", p.__proto__ === Person.prototype)
 
-console.log("🐶 ~~ Persion.constructor === Function:", Persion.constructor === Function)
+console.log("🐶 ~~ Person.constructor === Function:", Person.constructor === Function)
 
-console.log("🐶 ~~ Persion.__proto__ === Function.prototype:", Persion.__proto__ === Function.prototype)
+console.log("🐶 ~~ Person.__proto__ === Function.prototype:", Person.__proto__ === Function.prototype)
 
-console.log("🐶 ~~ Persion.prototype.constructor === Persion:", Persion.prototype.constructor === Persion)
+console.log("🐶 ~~ Person.prototype.constructor === Person:", Person.prototype.constructor === Person)
 
-console.log("🐶 ~~ Persion.prototype.__proto__ == Object.prototype:", Persion.prototype.__proto__ == Object.prototype)
+console.log("🐶 ~~ Person.prototype.__proto__ == Object.prototype:", Person.prototype.__proto__ == Object.prototype)
 
 console.log("🐶 ~~ Function.constructor === Function:", Function.constructor === Function)
 
@@ -66,7 +66,8 @@ console.log("🐶 ~~ Object.prototype.constructor === Object:", Object.prototype
 
 ```
 
-![验证结果](2023-03-26-17-54-44.png)
+验证结果
+![验证结果](./assets/2023-03-26-18-57-21.png)
 
 ## [typeof & instanceof](./typeof_and_instanceof.md)
 
