@@ -20,8 +20,8 @@
 >
 ### 2. 数据类型的判断
 
-1. typeof: 能判断值类型,函数, 不能精确判断 null, 对象, 数组
-2. instanceof: 能判断对象类型(判断在其原型链中能否找到该类型的原型)
+1. [typeof](./typeof.md): 能判断值类型,函数, 不能精确判断 null, 对象, 数组
+2. [instanceof](./instanceof.md): 能判断对象类型(判断在其原型链中能否找到该类型的原型)
 3. Object.prototype.toString.call(): 能判断所有原始数据类
 
 >如何判断变量为数组?

@@ -73,11 +73,11 @@
 
 [正则表达式](./JS/正则表达式.md)
 
-[案列：防抖debounce](./JS/案列：防抖debounce.md)
+[案列：防抖debounce](JS/advanced/案列：防抖debounce.md)
 
-[案列：节流throttle](./JS/案列：节流throttle.md)
+[案列：节流throttle](JS/advanced/案列：节流throttle.md)
 
-[案列：手写深拷贝](./JS/案列：手写深拷贝.md)
+[案列：手写深拷贝](JS/advanced/案列：手写深拷贝.md)
 
 
 ## Node

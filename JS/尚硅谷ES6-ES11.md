@@ -962,7 +962,7 @@ function SmartPhone(brand, price, color, size){
 }
 
 //设置子级构造函数的原型
-SmartPhone.prototype = new Phone;
+SmartPhone.prototype = new Phone();
 SmartPhone.prototype.constructor = SmartPhone;
 
 //声明子类的方法

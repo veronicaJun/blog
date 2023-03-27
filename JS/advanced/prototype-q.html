@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ch-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+/**
+ * new
+ */
+
+function Foo() {
+  getName = function() {
+    console.log(1);
+  };
+  return this;// 谁调用，this 就指谁身上
+}
+Foo.getName = function() {
+  console.log(2);
+};
+Foo.prototype.getName = function() {
+  console.log(3);
+};
+var getName = function() {
+  console.log(4);
+};
+function getName() {
+  console.log(5);
+}
+console.log("🐶Foo.getName()----------------------------------🐶")
+console.log('window.getName',window.getName);
+console.log("🐶 Foo:", Foo)//f Foo(){...}
+Foo.getName() //2
+
+console.log("🐶 getName()----------------------------------🐶")
+console.log('window.getName',window.getName);
+console.log("🐶 getName():", getName)//f(){console.log(4)}
+console.log('因为函数声明有函数提升，所以后面的var getName会覆盖掉函数声明，所以是4。');
+getName() //4 todo 变量提升 变量提升 和 函数提升
+
+console.log("🐶 Foo().getName()----------------------------------🐶")
+console.log('window.getName',window.getName);
+console.log("🐶 Foo():", Foo())//window
+console.log('调用Foo后返回当前this，即this指向window，然后去调用getName,因为此时非严格模式，在函数里面没有关键字赋值的表达式会在全局去创建一个getName,在这了相当于又重写了全局的getName');
+Foo().getName()//1 Foo() 返回 this，覆盖了 输出 4 的 getName 
+
+console.log("🐶 getName()----------------------------------🐶")
+console.log('window.getName',window.getName);
+console.log('为啥不是4，因为被Foo().getName()这个表达式重写了，准确的是Foo重写的');
+getName()//1 
+
+console.log("🐶 new Foo.getName()----------------------------------🐶")
+console.log('window.getName',window.getName);
+console.log('new 关键字会执行构造函数，也就是Foo.getName');
+new Foo.getName()//2
+
+console.log("🐶 new Foo().getName()----------------------------------🐶")
+console.log('window.getName',window.getName);
+console.log("🐶 Foo():", new Foo())// Foo {}
+console.log('先执行new Foo()，创建实例后调用实例的getName,但是Foo构造函数并没有给实例添加getName函数，所以实例只能去原型链上找getName并执行');
+new Foo().getName()//3 new Foo() 自身没有 getName，输出的是 Foo.prototype.getName()
+
+console.log("🐶new new Foo().getName() ----------------------------------🐶")
+console.log('window.getName',window.getName);
+console.log("🐶 Foo():", new Foo().getName)// ƒ () {console.log(3);}
+console.log('同上一个3，new 关键字会执行构造函数。');
+new new Foo().getName()//3 todo 不理解
+    </script>
+</body>
+</html>
