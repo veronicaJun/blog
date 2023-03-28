@@ -49,7 +49,7 @@ SmartPhone.subStaticFun = function(){
 
 var p = new Phone('父类 实例参数 1', '父类 实例参数 2');
 var sp = new SmartPhone('子类 实例参数 1', '子类 实例参数 2', '子类 实例参数 3', '子类 实例参数 4');
-console.log("🐶 ---ES5-------------------------------------------------🐶")
+console.log("%cES5","color: red; font-size: 40px")
 console.log("🐶 ---实例与构造函数----------------------------------------🐶")
 console.log('sp.__proto__ === SmartPhone.prototype', sp.__proto__ === SmartPhone.prototype);//true
 console.log('sp.constructor === SmartPhone', sp.constructor === SmartPhone);//true

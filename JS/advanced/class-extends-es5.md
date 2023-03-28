@@ -60,7 +60,9 @@
     sc1.showBooks();//TypeError
     ```
 
-## 组合式继承：类式继承和构造函数继承相组合
+## 组合式继承
+
+    类式继承和构造函数继承相组合
 
     ```js
     function SuperClass(name) {

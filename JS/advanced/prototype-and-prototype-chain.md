@@ -12,7 +12,7 @@
 6. ES6 如何实现一个类
 7. ES6 extends 关键字实现原理是什么
 8. ConstructorB 如何继承 ConstructorA
-9. [思考题](./q-prototype.html)
+9. [思考题](./prototype-q.html)
 
 ## 关键属性
 
@@ -35,7 +35,7 @@
 注：
 Function.\_\_proto\_\_ === Function.prototype
 Object.constructor === Function
-Function.prototype === Object.prototype
+Function.prototype.\_\_proto\_\_ === Object.prototype
 Object.prototype === null
 
 ```js
@@ -90,6 +90,10 @@ console.log("🐶 ~~ Object.prototype.constructor === Object:", Object.prototype
 
 ### [ES6 中类的继承](./class-extends-es6.md)
 
+### ES5 组合继承 和 ES6 继承 对比
+
+![ES5 组合继承 和 ES6 继承 对比](./assets/2023-03-27-23-59-42.png)
+
 ## 思考题解答
 
 1. 为什么 typeof 判断 null 是 Object 类型？
@@ -104,7 +108,13 @@ console.log("🐶 ~~ Object.prototype.constructor === Object:", Object.prototype
     - Object.\_\_proto\_\_ == Function.prototype
     - Function.prototype.\_\_proto\_\_ == Object.prototype
 
-3. new 关键字具体做了什么？[手写实现](./new-eg.js)
+3. new 关键字具体做了什么？
+
+    （1）首先创建了一个新的空对象
+    （2）设置原型，将对象的原型设置为函数的 prototype 对象。
+    （3）让函数的 this 指向这个对象，执行构造函数的代码（为这个新对象添加属性）
+    （4）判断函数的返回值类型，如果是值类型，返回创建的对象。如果是引用类型，就返回这个引用类型的对象。
+    [手写实现](./eg-new.js)
 
 4. prototype 和 \_\_proto\_\_ 是什么关系？什么情况下相等？
 
