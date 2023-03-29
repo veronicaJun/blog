@@ -165,9 +165,9 @@ url查询字符串：`new URL(request.url,'http://127.0.0.1').searchParams.get('
 ![img](../../../ToDo/media/16787801822617/16788023005587.jpg)
 
 ```js
-//1、引入http模块
+//1. 引入http模块
 const http = require("http");
-//2、建立服务
+//2. 建立服务
 const server = http.createServer((request,response)=>{
     let {url,method} = request; //对象的解构赋值
     //设置响应头信息
@@ -180,7 +180,7 @@ const server = http.createServer((request,response)=>{
         response.end("<h1>404 Not Found</h1>")
     }
 })
-//3、监听端口 
+//3. 监听端口 
 server.listen(8000,()=>{
     console.log('服务启动中....'); 
 })
