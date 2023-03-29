@@ -3874,7 +3874,9 @@ async function fn(){
         3. 脱离 DOM 的引用： 获取一个 DOM 元素的引用，而后面这个元素被删除，由于一直保留了对这个元素的引用，所以它也无法被回收。
         4. 闭包： 不合理的使用闭包，从而导致某些变量一直被留在内存当中。
 
-## React
+## 框架
+
+### React
 
 ### 一、组件基础
 
@@ -13484,3 +13486,17 @@ console.log(instance.getSuperValue());
 
 输出结果：true
 实际上，这段代码就是在实现原型链继承，SubType继承了SuperType，本质是重写了SubType的原型对象，代之以一个新类型的实例。SubType的原型被重写了，所以instance.constructor指向的是SuperType。具体如下：
+
+## 工程化
+
+## TypeScript
+
+## 数据结构与算法
+
+## 安全
+
+## Node
+
+## 项目/业务
+
+## 其他
