@@ -1776,562 +1776,348 @@
     - &&，如果条件判断结果为 true 就返回第二个操作数的值，如果为 false 就返回第一个操作数的值。
 - || 和 && 返回它们其中一个操作数的值，而非条件判断的结果
 
-#### 16. Object.is() 与比较操作符 “===”、“==” 的区别？
+#### 16. `Object.is()` 与比较操作符 `===`、`==` 的区别？
 
-- 双等号（==），如果两边的类型不一致，则会进行强制类型转化后再进行比较。
-- 三等号（===），如果两边的类型不一致时，不会做强制类型准换，直接返回 false。
-- 使用 Object.is 来进行相等判断时，一般情况下和三等号的判断相同，它处理了一些特殊的情况，比如 -0 和 +0 不再相等，两个 NaN 是相等的。
+- 双等号`==`，如果两边的类型不一致，则会进行强制类型转化后再进行比较。
+- 三等号`===`，如果两边的类型不一致时，不会做强制类型准换，直接返回 `false`。
+- `Object.is()` 更接近`===`，但对待有符号的零和 `NaN` 不同。
+    - 例子
+
+        ```js
+        // Case 1: Evaluation result is the same as using ===
+        Object.is(25, 25);                // true
+        Object.is('foo', 'foo');          // true
+        Object.is('foo', 'bar');          // false
+        Object.is(null, null);            // true
+        Object.is(undefined, undefined);  // true
+        Object.is(window, window);        // true
+        Object.is([], []);                // false
+        var foo = { a: 1 };
+        var bar = { a: 1 };
+        Object.is(foo, foo);              // true
+        Object.is(foo, bar);              // false
+
+        // Case 2: Signed zero
+        Object.is(0, -0);                 // false
+        Object.is(+0, -0);                // false
+        Object.is(-0, -0);                // true
+        Object.is(0n, -0n);               // true
+
+        // Case 3: NaN
+        Object.is(NaN, 0/0);              // true
+        Object.is(NaN, Number.NaN)        // true
+        ```
 
 #### 17. 什么是 JavaScript 中的包装类型？
 
-在 JavaScript 中，基本类型是没有属性和方法的，但是为了便于操作基本类型的值，在调用基本类型的属性或方法时 JavaScript 会在后台隐式地将基本类型的值转换为对象，如：
-const a = "abc";
-a.length; // 3
-a.toUpperCase(); // "ABC"
+- JS 提供了三种基本包装类型：String、 Number、 Boolean，与引用类型一样，基本包装类型也拥有内置方法可以对基础类型的值进行操作。
 
-在访问'abc'.length时，JavaScript 将'abc'在后台转换成String('abc')，然后再访问其length属性。
-JavaScript也可以使用Object函数显式地将基本类型转换为包装类型：
-var a = 'abc'
-Object(a) // String {"abc"}
+- 包装类型与基本类型 string、 number、 boolean 的区别
+    - 基本类型 string、 number、 boolean 是不可变的，而基本包装类型是可变的。
+    - 基本类型 string、 number、 boolean 不是对象，而基本包装类型是对象。
+    - 基本类型 string、 number、 boolean 不具有属性和方法，而基本包装类型具有属性和方法。
 
-也可以使用valueOf方法将包装类型倒转成基本类型：
-var a = 'abc'
-var b = Object(a)
-var c = b.valueOf() // 'abc'
+- 包装类型与引用类型的区别
+    - 基本包装类型的对象在执行流离开作用域后会被销毁，而引用类型的对象在执行流离开作用域后不会被销毁。
+    - 基本包装类型的对象不能添加属性和方法，而引用类型的对象可以添加属性和方法。
+    - 基本包装类型的对象是通过 new 操作符 调用 String()、 Number()、 Boolean() 函数创建的，而引用类型的对象是通过 字面量 调用 Object() 函数创建的。
 
-看看如下代码会打印出什么：
-var a = new Boolean( false );
-if (!a) {
- console.log( "Oops" ); // never runs
-}
+#### 18.  JavaScript 中如何进行隐式类型转换？
 
-答案是什么都不会打印，因为虽然包裹的基本类型是false，但是false被包裹成包装类型后就成了对象，所以其非值为false，所以循环体中的内容不会运行。
-18. JavaScript 中如何进行隐式类型转换？
-首先要介绍ToPrimitive方法，这是 JavaScript 中每个值隐含的自带的方法，用来将值 （无论是基本类型值还是对象）转换为基本类型值。如果值为基本类型，则直接返回值本身；如果值为对象，其看起来大概是这样：
-/**
+- JavaScript 中的隐式类型转换是指在运行时，JavaScript 引擎会自动将一个数据类型转换为另一个数据类型，这种转换是由 JavaScript 引擎自动完成的，不需要我们手动操作。
 
-- @obj 需要转换的对象
-- @type 期望的结果类型
-*/
-ToPrimitive(obj,type)
+- ToPrimitive(obj,type)
+    - JavaScript 中每个值隐含的自带的方法，用来将值 （无论是基本类型值还是对象）转换为基本类型值。
+    - 参数
+        - obj 需要转换的对象
+        - type 期望的结果类型
+    - 逻辑
+        - 如果obj值为基本类型，则直接返回值本身
+        - 如果obj值为对象
+            - 当type为number时
+                - 调用obj的valueOf方法，如果为原始值，则返回，否则下一步；
+                - 调用obj的toString方法，如果为原始值，则返回，否则下一步；
+                - 抛出TypeError 异常。
+            - 当type为string时
+                - 调用obj的toString方法，如果为原始值，则返回，否则下一步；
+                - 调用obj的valueOf方法，如果为原始值，则返回，否则下一步；
+                - 抛出TypeError 异常。
 
-type的值为number或者string。
+- 运算符 `+`、`-`、`*`、`/`、`==`、`>`、`<`、
+    - 这些运算符只能操作基本类型值，所以在运算前先用ToPrimitive转换成基本类型，再进行操作。
+    - 隐式转换的规则
+        - `+`
+            - 两边至少有一个 string 时，两边的变量都会被隐式转换为字符串
+            - 其他情况下两边的变量都会被转换为数字
+        - `-`、`*`、`/`
+            - 如果两边的值都是数字，则进行相应的运算
+            - 如果两边的值有一个不是数字，则将两边的值都转换为数字，再进行相应的运算
+        - `==`、`>`、`<`
+            - 如果两边的值类型相同，则直接进行比较
+            - 如果两边的值类型不同，则将两边的值都转换为数字，再进行比较
+        - `===`
+            - 如果两边的值类型相同，则直接进行比较
+            - 如果两边的值类型不同，则直接返回 false
+        - `!!`
+            - 将值转换为布尔值
 
-- 当type为number时规则如下：
+#### 19. + 操作符什么时候用于字符串的拼接？
 
-调用obj的valueOf方法，如果为原始值，则返回，否则下一步；
-调用obj的toString方法，后续同上；
-抛出TypeError 异常。
+- `+` 的其中一个操作数是字符串（或者通过 ToPrimitive 骤最终得到字符串）的，则执行字符串拼接，否则执行数字加法。
+- 除了 `+` 以外的运算符，只要其中一方是数字，那么另一方就会被转为数字。
 
-- 当type为string时规则如下：
+#### 20.  为什么会有BigInt的提案？
 
-调用obj的toString方法，如果为原始值，则返回，否则下一步；
-调用obj的valueOf方法，后续同上；
-抛出TypeError 异常。
+- JavaScript中Number.MAX_SAFE_INTEGER表示最⼤安全数字，计算结果是9007199254740991，即在这个数范围内不会出现精度丢失（⼩数除外）。
+- ⼀旦超过这个范围，js就会出现计算不准确的情况，这在⼤数计算的时候不得不依靠⼀些第三⽅库进⾏解决，因此官⽅提出了BigInt来解决此问题。
 
-可以看出两者的主要区别在于调用toString和valueOf的先后顺序。默认情况下：
+#### 21.  object.assign 和扩展符是深拷贝还是浅拷贝，两者区别
 
-如果对象为 Date 对象，则type默认为string；
-其他情况下，type默认为number。
-
-总结上面的规则，对于 Date 以外的对象，转换为基本类型的大概规则可以概括为一个函数：
-var objToNumber = value => Number(value.valueOf().toString())
-objToNumber([]) === 0
-objToNumber({}) === NaN
-
-而 JavaScript 中的隐式类型转换主要发生在+、-、*、/以及==、>、<这些运算符之间。而这些运算符只能操作基本类型值，所以在进行这些运算前的第一步就是将两边的值用ToPrimitive转换成基本类型，再进行操作。
-以下是基本类型的值在不同操作符的情况下隐式转换的规则 （对于对象，其会被ToPrimitive转换成基本类型，所以最终还是要应用基本类型转换规则）：
-
-+操作符
-+操作符的两边有至少一个string类型变量时，两边的变量都会被隐式转换为字符串；其他情况下两边的变量都会被转换为数字。
-
-1 + '23' // '123'
- 1 + false // 1
- 1 + Symbol() // Uncaught TypeError: Cannot convert a Symbol value to a number
- '1' + false // '1false'
- false + true // 1
-
--、*、\操作符
-
-NaN也是一个数字
-1 *'23' // 23
-1* false // 0
- 1 / 'aa' // NaN
-
-对于==操作符
-
-操作符两边的值都尽量转成number：
-3 == true // false, 3 转为number为3，true转为number为1
-'0' == false //true, '0'转为number为0，false转为number为0
-'0' == 0 // '0'转为number为0
-
-对于<和>比较符
-
-如果两边都是字符串，则比较字母表顺序：
-'ca' < 'bd' // false
-'a' < 'b' // true
-
-其他情况下，转换为数字再比较：
-'12' < 13 // true
-false > -1 // true
-
-以上说的是基本类型的隐式转换，而对象会被ToPrimitive转换为基本类型再进行转换：
-var a = {}
-a > 2 // false
-
-其对比过程如下：
-a.valueOf() // {}, 上面提到过，ToPrimitive默认type为number，所以先valueOf，结果还是个对象，下一步
-a.toString() // "[object Object]"，现在是一个字符串了
-Number(a.toString()) // NaN，根据上面 < 和 > 操作符的规则，要转换成数字
-NaN > 2 //false，得出比较结果
-
-又比如：
-var a = {name:'Jack'}
-var b = {age: 18}
-a + b // "[object Object][object Object]"
-
-运算过程如下：
-a.valueOf() // {}，上面提到过，ToPrimitive默认type为number，所以先valueOf，结果还是个对象，下一步
-a.toString() // "[object Object]"
-b.valueOf() // 同理
-b.toString() // "[object Object]"
-a + b // "[object Object][object Object]"
-
-*9. + 操作符什么时候用于字符串的拼接？
-根据 ES5 规范，如果某个操作数是字符串或者能够通过以下步骤转换为字符串的话，+ 将进行拼接操作。如果其中一个操作数是对象（包括数组），则首先对其调用 ToPrimitive 抽象操作，该抽象操作再调用 [[DefaultValue]]，以数字作为上下文。如果不能转换为字符串，则会将其转换为数字类型来进行计算。
-简单来说就是，如果 + 的其中一个操作数是字符串（或者通过以上步骤最终得到字符串），则执行字符串拼接，否则执行数字加法。
-那么对于除了加法的运算符来说，只要其中一方是数字，那么另一方就会被转为数字。
-20. 为什么会有BigInt的提案？
-JavaScript中Number.MAX_SAFE_INTEGER表示最⼤安全数字，计算结果是9007199254740991，即在这个数范围内不会出现精度丢失（⼩数除外）。但是⼀旦超过这个范围，js就会出现计算不准确的情况，这在⼤数计算的时候不得不依靠⼀些第三⽅库进⾏解决，因此官⽅提出了BigInt来解决此问题。
-21. object.assign和扩展运算法是深拷贝还是浅拷贝，两者区别
-扩展运算符：
-let outObj = {
-  inObj: {a: 1, b: 2}
-}
-let newObj = {...outObj}
-newObj.inObj.a = 2
-console.log(outObj) // {inObj: {a: 2, b: 2}}
-
-Object.assign():
-let outObj = {
-  inObj: {a: 1, b: 2}
-}
-let newObj = Object.assign({}, outObj)
-newObj.inObj.a = 2
-console.log(outObj) // {inObj: {a: 2, b: 2}}
-
-可以看到，两者都是浅拷贝。
-
-Object.assign()方法接收的第一个参数作为目标对象，后面的所有参数作为源对象。然后把所有的源对象合并到目标对象中。它会修改了一个对象，因此会触发 ES6 setter。
-扩展操作符（…）使用它时，数组或对象中的每一个值都会被拷贝到一个新的数组或对象中。它不复制继承的属性或类的属性，但是它会复制ES6的 symbols 属性。
+- 都是浅拷贝。
+- 都不复制继承的属性或类的属性。
+- object.assign 和扩展符的区别
+    - object.assign 会修改原对象，扩展符不修改原对象。
+    - Object.assign 会触发 set 方法，扩展符不触发。
+    - 扩展符会复制 ES6 的 symbols 属性。
 
 ### 二、ES6
 
-1. let、const、var的区别
+#### 1. let、const、var的区别
 
-- 块级作用域： 块作用域由 { }包括，let和const具有块级作用域，var不存在块级作用域。块级作用域解决了ES5中的两个问题：
+- 块级作用域： 块作用域由 { } 包裹
+    - 解决了 ES5 中的两个问题
+        - 内层变量可能覆盖外层变量
+        - 用来计数的循环变量泄露为全局变量
+    - let 和 const 具有块级作用域
+    - var 不存在块级作用域
 
-内层变量可能覆盖外层变量
-用来计数的循环变量泄露为全局变量
+- 变量提升
+    - var存在变量提升
+    - let和const不存在变量提升，即在变量只能在声明之后使用，否在会报错。
 
-- 变量提升： var存在变量提升，let和const不存在变量提升，即在变量只能在声明之后使用，否在会报错。
-- 给全局添加属性： 浏览器的全局对象是window，Node的全局对象是global。var声明的变量为全局变量，并且会将该变量添加为全局对象的属性，但是let和const不会。
-- 重复声明： var声明变量时，可以重复声明变量，后声明的同名变量会覆盖之前声明的遍历。const和let不允许重复声明变量。
-- 暂时性死区： 在使用let、const命令声明变量之前，该变量都是不可用的。这在语法上，称为暂时性死区。使用var声明的变量不存在暂时性死区。
-- 初始值设置： 在变量声明时，var 和 let 可以不用设置初始值。而const声明变量必须设置初始值。
-- 指针指向： let和const都是ES6新增的用于创建变量的语法。 let创建的变量是可以更改指针指向（可以重新赋值）。但const声明的变量是不允许改变指针的指向。
+- 给全局添加属性
+    - var声明的变量为全局变量，并且会将该变量添加为全局对象的属性
+    - let和const不会。
+- 重复声明
+    - var声明变量时，可以重复声明变量，后声明的同名变量会覆盖之前声明的遍历
+    - const和let不允许重复声明变量。
+- 暂时性死区： 变量声明变量之前不可用的。
+    - let、const 有暂时性死区。
+    - var 不存在暂时性死区。
+- 初始值设置
+    - var 和 let 可以不用设置初始值。
+    - const声明变量必须设置初始值。
+- 指针指向
+    - let创建的变量是可以更改指针指向（可以重新赋值）。
+    - const声明的变量是不允许改变指针的指向。
 
-区别varletconst是否有块级作用域×✔️✔️是否存在变量提升✔️××是否添加全局属性✔️××能否重复声明变量✔️××是否存在暂时性死区×✔️✔️是否必须设置初始值××✔️能否改变指针指向✔️✔️×
-2. const对象的属性可以修改吗
-const保证的并不是变量的值不能改动，而是变量指向的那个内存地址不能改动。对于基本类型的数据（数值、字符串、布尔值），其值就保存在变量指向的那个内存地址，因此等同于常量。
-但对于引用类型的数据（主要是对象和数组）来说，变量指向数据的内存地址，保存的只是一个指针，const只能保证这个指针是固定不变的，至于它指向的数据结构是不是可变的，就完全不能控制了。
-3. 如果new一个箭头函数的会怎么样
-箭头函数是ES6中的提出来的，它没有prototype，也没有自己的this指向，更不可以使用arguments参数，所以不能New一个箭头函数。
-new操作符的实现步骤如下：
+#### 2. const对象的属性可以修改吗
 
-创建一个对象
-将构造函数的作用域赋给新对象（也就是将对象的__proto__属性指向构造函数的prototype属性）
-指向构造函数中的代码，构造函数中的this指向该对象（也就是为这个对象添加属性和方法）
-返回新的对象
+- const声明的对象是不允许改变指针的指向，但是对象的属性是可以修改的。
 
-所以，上面的第二、三步，箭头函数都是没有办法执行的。
-4. 箭头函数与普通函数的区别
+#### 3. 如果 new 一个箭头函数的会怎么样
+
+- 箭头函数，它没有prototype，也没有自己的this指向，不可以使用arguments参数，所以不能New一个箭头函数。
+- new操作符的实现步骤如下：
+    1. 创建一个对象
+    2. 将构造函数的作用域赋给新对象（也就是将对象的__proto__属性指向构造函数的prototype属性）
+    3. 指向构造函数中的代码，构造函数中的this指向该对象（也就是为这个对象添加属性和方法）
+    4. 返回新的对象
+    - 箭头函数无法执行 2，3 步。
+
+#### 4. 箭头函数与普通函数的区别
 
 - 箭头函数比普通函数更加简洁
-
-如果没有参数，就直接写一个空括号即可
-如果只有一个参数，可以省去参数的括号
-如果有多个参数，用逗号分割
-如果函数体的返回值只有一句，可以省略大括号
-如果函数体不需要返回值，且只有一句话，可以给这个语句前面加一个void关键字。最常见的就是调用一个函数：
-
-let fn = () => void doesNotReturn();
+    - 如果没有参数，就直接写一个空括号即可
+    - 如果只有一个参数，可以省去参数的括号
+    - 如果有多个参数，用逗号分割
+    - 如果函数体的返回值只有一句，可以省略大括号
+    - 如果函数体不需要返回值，且只有一句话，可以给这个语句前面加一个void关键字。
 
 - 箭头函数没有自己的this
-箭头函数不会创建自己的this， 所以它没有自己的this，它只会在自己作用域的上一层继承this。所以箭头函数中this的指向在它在定义时已经确定了，之后不会改变。
+    - 箭头函数没有自己的this，它只会继承自己作用域的上一层this。
+    - 箭头函数中this的指向在它在定义时已经确定了，之后不会改变。
+
 - 箭头函数继承来的this指向永远不会改变
-var id = 'GLOBAL';
-var obj = {
-  id: 'OBJ',
-  a: function(){
-    console.log(this.id);
-  },
-  b: () => {
-    console.log(this.id);
-  }
-};
-obj.a();    // 'OBJ'
-obj.b();    // 'GLOBAL'
-new obj.a()  // undefined
-new obj.b()  // Uncaught TypeError: obj.b is not a constructor
-
-对象obj的方法b是使用箭头函数定义的，这个函数中的this就永远指向它定义时所处的全局执行环境中的this，即便这个函数是作为对象obj的方法调用，this依旧指向Window对象。需要注意，定义对象的大括号{}是无法形成一个单独的执行环境的，它依旧是处于全局执行环境中。
-
 - call()、apply()、bind()等方法不能改变箭头函数中this的指向
-var id = 'Global';
-let fun1 = () => {
-    console.log(this.id)
-};
-fun1();                     // 'Global'
-fun1.call({id: 'Obj'});     // 'Global'
-fun1.apply({id: 'Obj'});    // 'Global'
-fun1.bind({id: 'Obj'})();   // 'Global'
-
 - 箭头函数不能作为构造函数使用
-构造函数在new的步骤在上面已经说过了，实际上第二步就是将函数中的this指向该对象。 但是由于箭头函数时没有自己的this的，且this指向外层的执行环境，且不能改变指向，所以不能当做构造函数使用。
 - 箭头函数没有自己的arguments
-箭头函数没有自己的arguments对象。在箭头函数中访问arguments实际上获得的是它外层函数的arguments值。
 - 箭头函数没有prototype
 - 箭头函数不能用作Generator函数，不能使用yeild关键字
 
-5. 箭头函数的this指向哪⾥？
-箭头函数不同于传统JavaScript中的函数，箭头函数并没有属于⾃⼰的this，它所谓的this是捕获其所在上下⽂的 this 值，作为⾃⼰的 this 值，并且由于没有属于⾃⼰的this，所以是不会被new调⽤的，这个所谓的this也不会被改变。
-可以⽤Babel理解⼀下箭头函数:
-// ES6
-const obj = {
-  getArrow() {
-    return () => {
-      console.log(this === obj);
+#### 5. 箭头函数的this指向哪⾥？
+
+- 箭头函数没有自己的this，它只会继承自己作用域的上一层this。
+- ES6
+
+    ```js
+    const obj = {
+    getArrow() {
+        return () => {
+        console.log(this === obj);
+        };
+    }
+    }
+    ```
+
+- ES5，由 Babel 转译
+
+    ```js
+    var obj = {
+    getArrow: function getArrow() {
+        var _this = this;
+        return function () {
+            console.log(_this === obj);
+        };
+    }
     };
-  }
-}
+    ```
 
-转化后：
-// ES5，由 Babel 转译
-var obj = {
-   getArrow: function getArrow() {
-     var _this = this;
-     return function () {
-        console.log(_this === obj);
-     };
-   }
-};
+#### 6. 扩展运算符的作用及使用场景
 
-6. 扩展运算符的作用及使用场景
+- 对象扩展运算符：用于取出参数对象中的所有可遍历属性
+    - 对象的浅拷贝
+- 数组扩展运算符：数组的扩展运算符可以将一个数组转为用逗号分隔的参数序列，且每次只能展开一层数组。
+    1. 将数组转换为参数序列
+    2. 复制数组
+    3. 合并数组
+    4. 扩展运算符与解构赋值结合起来，用于生成数组
+    5. 任何 Iterator 接口的对象(字符串)，都可以用扩展运算符转为真正的数组
 
-- 对象扩展运算符
-对象的扩展运算符(...)用于取出参数对象中的所有可遍历属性，拷贝到当前对象之中。
-let bar = { a: 1, b: 2 };
-let baz = { ...bar }; // { a: 1, b: 2 }
+#### 7. 对对象与数组的解构的理解
 
-上述方法实际上等价于:
-let bar = { a: 1, b: 2 };
-let baz = Object.assign({}, bar); // { a: 1, b: 2 }
+- 从对象或数组里有针对性地拿到想要的数值
 
-Object.assign方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象（target）。Object.assign方法的第一个参数是目标对象，后面的参数都是源对象。(如果目标对象与源对象有同名属性，或多个源对象有同名属性，则后面的属性会覆盖前面的属性)。
-同样，如果用户自定义的属性，放在扩展运算符后面，则扩展运算符内部的同名属性会被覆盖掉。
-let bar = {a: 1, b: 2};
-let baz = {...bar, ...{a:2, b: 4}};  // {a: 2, b: 4}
+- 数组的解构
+    - 在解构数组时，以元素的位置为匹配条件来提取想要的数据
 
-利用上述特性就可以很方便的修改对象的部分属性。在redux中的reducer函数规定必须是一个纯函数，reducer中的state对象要求不能直接修改，可以通过扩展运算符把修改路径的对象都复制一遍，然后产生一个新的对象返回。
-需要注意：扩展运算符对对象实例的拷贝属于浅拷贝。
+- 对象的解构
+    - 在解构对象时，是以属性的名称为匹配条件，来提取想要的数据的。
+    - 注意，对象解构严格以属性名作为定位依据，所以就算调换了 name 和 age 的位置，结果也是一样的
 
-- 数组扩展运算符
-数组的扩展运算符可以将一个数组转为用逗号分隔的参数序列，且每次只能展开一层数组。
-console.log(...[1, 2, 3])
-// 1 2 3
-console.log(...[1, [2, 3, 4], 5])
-// 1 [2, 3, 4] 5
+#### 8. 如何结构高度嵌套的对象里的指定属性
 
-下面是数组的扩展运算符的应用：
+- 方法一：一层一层解构
+- 方法二：嵌套解构
+    - 对象
 
-将数组转换为参数序列
+        ```js
+        const school = {
+            classes: {
+                stu: {
+                    name: 'Bob',
+                    age: 24,
+                }
+            }
+        }
+        ```
 
-function add(x, y) {
-  return x + y;
-}
-const numbers = [1, 2];
-add(...numbers) // 3
+    - 解构
 
-复制数组
+        ```js
+        const { classes: { stu: { name } }} = school
+        ```
 
-const arr1 = [1, 2];
-const arr2 = [...arr1];
+### 9. 对 rest 参数的理解
 
-要记住：扩展运算符(…)用于取出参数对象中的所有可遍历属性，拷贝到当前对象之中，这里参数对象是个数组，数组里面的所有对象都是基础数据类型，将所有基础数据类型重新拷贝到新的数组中。
+- 扩展运算符被用在函数形参上时，它还可以把一个分离的参数序列整合成一个数组
+- 经常用于获取函数的多余参数，或者参数个数不确定的情况。
 
-合并数组
+#### 10.  ES6中模板语法与字符串处理
 
-如果想在数组内合并数组，可以这样：
-const arr1 = ['two', 'three'];const arr2 = ['one', ...arr1, 'four', 'five'];// ["one", "two", "three", "four", "five"]
+- 模板字符串
+    1. 语法：'`${js表达式}字符串`'
+    2. 简化字符串拼接
+    3. 保留空格、缩进、换行
+    4. 支持${}中“运算”式的表达式
 
-扩展运算符与解构赋值结合起来，用于生成数组
+- 字符串处理
+    - 存在性判定：在过去，当判断一个字符/字符串是否在某字符串中时，只能用 indexOf > -1 来做。
+        1. includes：判断字符串与子串的包含关系：
+        2. startsWith：判断字符串是否以某个/某串字符开头：
+        3. endsWith：判断字符串是否以某个/某串字符结尾：
 
-const [first, ...rest] = [1, 2, 3, 4, 5];first // 1rest  // [2, 3, 4, 5]
-
-需要注意：如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错。
-const [...rest, last] = [1, 2, 3, 4, 5];         // 报错const [first, ...rest, last] = [1, 2, 3, 4, 5];  // 报错
-
-将字符串转为真正的数组
-
-[...'hello']    // [ "h", "e", "l", "l", "o" ]
-
-任何 Iterator 接口的对象，都可以用扩展运算符转为真正的数组
-
-比较常见的应用是可以将某些数据结构转为数组：
-// arguments对象
-function foo() {
-  const args = [...arguments];
-}
-
-用于替换es5中的Array.prototype.slice.call(arguments)写法。
-
-使用Math函数获取数组中特定的值
-
-const numbers = [9, 4, 7, 1];
-Math.min(...numbers); // 1
-Math.max(...numbers); // 9
-
-8. 对对象与数组的解构的理解
-解构是 ES6 提供的一种新的提取数据的模式，这种模式能够从对象或数组里有针对性地拿到想要的数值。
-1）数组的解构
-在解构数组时，以元素的位置为匹配条件来提取想要的数据的：
-const [a, b, c] = [1, 2, 3]
-
-最终，a、b、c分别被赋予了数组第0. 1. 2个索引位的值：
-
-数组里的0. 1. 2索引位的元素值，精准地被映射到了左侧的第0. 1. 2个变量里去，这就是数组解构的工作模式。还可以通过给左侧变量数组设置空占位的方式，实现对数组中某几个元素的精准提取：
-const [a,,c] = [1,2,3]
-
-通过把中间位留空，可以顺利地把数组第一位和最后一位的值赋给 a、c 两个变量：
-
-2）对象的解构
-对象解构比数组结构稍微复杂一些，也更显强大。在解构对象时，是以属性的名称为匹配条件，来提取想要的数据的。现在定义一个对象：
-const stu = {
-  name: 'Bob',
-  age: 24
-}
-
-假如想要解构它的两个自有属性，可以这样：
-const { name, age } = stu
-
-这样就得到了 name 和 age 两个和 stu 平级的变量：
-
-注意，对象解构严格以属性名作为定位依据，所以就算调换了 name 和 age 的位置，结果也是一样的：
-const { age, name } = stu
-
-9. 如何提取高度嵌套的对象里的指定属性？
-有时会遇到一些嵌套程度非常深的对象：
-const school = {
-   classes: {
-      stu: {
-         name: 'Bob',
-         age: 24,
-      }
-   }
-}
-
-像此处的 name 这个变量，嵌套了四层，此时如果仍然尝试老方法来提取它：
-const { name } = school
-
-显然是不奏效的，因为 school 这个对象本身是没有 name 这个属性的，name 位于 school 对象的“儿子的儿子”对象里面。要想把 name 提取出来，一种比较笨的方法是逐层解构：
-const { classes } = school
-const { stu } = classes
-const { name } = stu
-name // 'Bob'
-
-但是还有一种更标准的做法，可以用一行代码来解决这个问题：
-const { classes: { stu: { name } }} = school
-
-console.log(name)  // 'Bob'
-
-可以在解构出来的变量名右侧，通过冒号+{目标属性名}这种形式，进一步解构它，一直解构到拿到目标数据为止。
-10. 对 rest 参数的理解
-扩展运算符被用在函数形参上时，它还可以把一个分离的参数序列整合成一个数组：
-function mutiple(...args) {
-  let result = 1;
-  for (var val of args) {
-    result *= val;
-  }
-  return result;
-}
-mutiple(1, 2, 3, 4) // 24
-
-这里，传入 mutiple 的是四个分离的参数，但是如果在 mutiple 函数里尝试输出 args 的值，会发现它是一个数组：
-function mutiple(...args) {
-  console.log(args)
-}
-mutiple(1, 2, 3, 4) // [1, 2, 3, 4]
-
-这就是 … rest运算符的又一层威力了，它可以把函数的多个入参收敛进一个数组里。这一点经常用于获取函数的多余参数，或者像上面这样处理函数参数个数不确定的情况。
-11. ES6中模板语法与字符串处理
-ES6 提出了“模板语法”的概念。在 ES6 以前，拼接字符串是很麻烦的事情：
-var name = 'css'
-var career = 'coder'
-var hobby = ['coding', 'writing']
-var finalString = 'my name is ' + name + ', I work as a ' + career + ', I love ' + hobby[0] + ' and ' + hobby[1]
-
-仅仅几个变量，写了这么多加号，还要时刻小心里面的空格和标点符号有没有跟错地方。但是有了模板字符串，拼接难度直线下降：
-var name = 'css'
-var career = 'coder'
-var hobby = ['coding', 'writing']
-var finalString = `my name is ${name}, I work as a ${career} I love ${hobby[0]} and ${hobby[1]}`
-
-字符串不仅更容易拼了，也更易读了，代码整体的质量都变高了。这就是模板字符串的第一个优势——允许用${}的方式嵌入变量。但这还不是问题的关键，模板字符串的关键优势有两个：
-
-在模板字符串中，空格、缩进、换行都会被保留
-模板字符串完全支持“运算”式的表达式，可以在${}里完成一些计算
-
-基于第一点，可以在模板字符串里无障碍地直接写 html 代码：
-let list = `
- <ul>
-  <li>列表项1</li>
-  <li>列表项2</li>
- </ul>
-`;
-console.log(message); // 正确输出，不存在报错
-
-基于第二点，可以把一些简单的计算和调用丢进 ${} 来做：
-function add(a, b) {
-  const finalString = `${a} + ${b} = ${a+b}`
-  console.log(finalString)
-}
-add(1, 2) // 输出 '1 + 2 = 3'
-
-除了模板语法外， ES6中还新增了一系列的字符串方法用于提升开发效率：
-
-- 存在性判定：在过去，当判断一个字符/字符串是否在某字符串中时，只能用 indexOf > -1 来做。现在 ES6 提供了三个方法：includes、startsWith、endsWith，它们都会返回一个布尔值来告诉你是否存在。
-
-includes：判断字符串与子串的包含关系：
-
-const son = 'haha'
-const father = 'xixi haha hehe'
-father.includes(son) // true
-
-startsWith：判断字符串是否以某个/某串字符开头：
-
-const father = 'xixi haha hehe'
-father.startsWith('haha') // false
-father.startsWith('xixi') // true
-
-endsWith：判断字符串是否以某个/某串字符结尾：
-
-const father = 'xixi haha hehe'
-  father.endsWith('hehe') // true
-
-- 自动重复：可以使用 repeat 方法来使同一个字符串输出多次（被连续复制多次）：
-const sourceCode = 'repeat for 3 times;'
-const repeated = sourceCode.repeat(3)
-console.log(repeated) // repeat for 3 times;repeat for 3 times;repeat for 3 times;
+- 自动重复：使同一个字符串输出多次（被连续复制多次）
+    - `'string'.repeat(n)`
 
 ### 三、JavaScript基础
 
-1. new操作符的实现原理
-new操作符的执行过程：
+#### 1. new操作符的实现原理
 
 - 首先创建了一个新的空对象
-- 设置原型，将对象的原型设置为函数的 prototype 对象。
-- 让函数的 this 指向这个对象，执行构造函数的代码（为这个新对象添加属性）
-- 判断函数的返回值类型，如果是值类型，返回创建的对象。如果是引用类型，就返回这个引用类型的对象。
-具体实现：
-function objectFactory() {
-  let newObject = null;
-  let constructor = Array.prototype.shift.call(arguments);
-  let result = null;
-  // 判断参数是否是一个函数
-  if (typeof constructor !== "function") {
-    console.error("type error");
-    return;
-  }
-  // 新建一个空对象，对象的原型为构造函数的 prototype 对象
-  newObject = Object.create(constructor.prototype);
-  // 将 this 指向新建对象，并执行函数
-  result = constructor.apply(newObject, arguments);
-  // 判断返回对象
-  let flag = result && (typeof result === "object" || typeof result === "function");
-  // 判断返回结果
-  return flag ? result : newObject;
-}
-// 使用方法
-objectFactory(构造函数, 初始化参数);
+- 设置原型，将对象的原型设置为构造函数的 prototype 对象。
+- 用 apply 让构造函数的 this 指向这个对象，并执行构造函数（为这个新对象添加属性）
+- 判断构造函数的返回值类型，如果是值类型，返回创建的对象。如果是引用类型，就返回这个引用类型的对象。
 
-2. map和Object的区别
+#### 2. Map 和 Object 的区别
 
-MapObject意外的键Map默认情况不包含任何键，只包含显式插入的键。Object 有一个原型, 原型链上的键名有可能和自己在对象上的设置的键名产生冲突。键的类型Map的键可以是任意值，包括函数、对象或任意基本类型。Object 的键必须是 String 或是Symbol。键的顺序Map 中的 key 是有序的。因此，当迭代的时候， Map 对象以插入的顺序返回键值。Object 的键是无序的SizeMap 的键值对个数可以轻易地通过size 属性获取Object 的键值对个数只能手动计算迭代Map 是 iterable 的，所以可以直接被迭代。迭代Object需要以某种方式获取它的键然后才能迭代。性能在频繁增删键值对的场景下表现更好。在频繁添加和删除键值对的场景下未作出优化。
-3. map和weakMap的区别
+- 键的类型
+    - Map的键可以是任意值，包括函数、对象或任意基本类型。
+    - Object 的键必须是 String 或是Symbol。
+- 键
+    - Map默认情况不包含任何键，只包含显式插入的键。
+    - Object 有一个原型, 原型链上的键名有可能和自己在对象上的设置的键名产生冲突。
+- 键的顺序
+    - Map 中的 key 是有序的。因此，当迭代的时候， Map 对象以插入的顺序返回键值。
+    - Object 的键是无序的
+- 键值对个数的获取
+    - Map 的键值对个数可以轻易地通过size 属性获取
+    - Object 的键值对个数只能手动计算
+- 迭代
+    - Map 是 iterable 的，所以可以直接被迭代。
+    - Object 需要以某种方式获取它的键然后才能迭代。
+- 性能
+    - 在频繁增删键值对的场景下表现更好。
+    - 在频繁添加和删除键值对的场景下未作出优化。
+
+#### 3. map 和 weakMap 的区别
 
 - Map
-map本质上就是键值对的集合，但是普通的Object中的键值对中的键只能是字符串。而ES6提供的Map数据结构类似于对象，但是它的键不限制范围，可以是任意类型，是一种更加完善的Hash结构。如果Map的键是一个原始数据类型，只要两个键严格相同，就视为是同一个键。
-实际上Map是一个数组，它的每一个数据也都是一个数组，其形式如下：
-const map = [
-     ["name","张三"],
-     ["age",18],
-]
+    - Map类似于对象，本质上就是键值对的集合，但是它的键不限制范围，可以是任意类型。
+    - 实际上Map是一个数组，它的每一个数据也都是一个数组，其形式
 
-Map数据结构有以下操作方法：
+        ```js
+        const map = [
+            ["name","张三"],
+            ["age",18],
+        ]
+        ```
 
-size： map.size 返回Map结构的成员总数。
-set(key,value)：设置键名key对应的键值value，然后返回整个Map结构，如果key已经有值，则键值会被更新，否则就新生成该键。（因为返回的是当前Map对象，所以可以链式调用）
-get(key)：该方法读取key对应的键值，如果找不到key，返回undefined。
-has(key)：该方法返回一个布尔值，表示某个键是否在当前Map对象中。
-delete(key)：该方法删除某个键，返回true，如果删除失败，返回false。
-clear()：map.clear()清除所有成员，没有返回值。
+    - Map的操作方法
+        - size： map.size 返回Map结构的成员总数。
+        - set(key,value)：设置键名key对应的键值value，然后返回整个Map结构，如果key已经有值，则键值会被更新，否则就新生成该键。（因为返回的是当前Map对象，所以可以链式调用）
+        - get(key)：该方法读取key对应的键值，如果找不到key，返回undefined。
+        - has(key)：该方法返回一个布尔值，表示某个键是否在当前Map对象中。
+        - delete(key)：该方法删除某个键，返回true，如果删除失败，返回false。
+        - clear()：map.clear()清除所有成员，没有返回值。
 
-Map结构原生提供是三个遍历器生成函数和一个遍历方法
-
-keys()：返回键名的遍历器。
-values()：返回键值的遍历器。
-entries()：返回所有成员的遍历器。
-forEach()：遍历Map的所有成员。
-
-const map = new Map([
-     ["foo",1],
-     ["bar",2],
-])
-for(let key of map.keys()){
-    console.log(key);  // foo bar
-}
-for(let value of map.values()){
-     console.log(value); // 1 2
-}
-for(let items of map.entries()){
-    console.log(items);  // ["foo",1]  ["bar",2]
-}
-map.forEach( (value,key,map) => {
-     console.log(key,value); // foo 1    bar 2
-})
+    - Map的三个遍历器生成函数和一个遍历方法
+        - keys()：返回键名的遍历器。
+        - values()：返回键值的遍历器。
+        - entries()：返回所有成员的遍历器。
+        - forEach()：遍历Map的所有成员。
 
 - WeakMap
-WeakMap 对象也是一组键值对的集合，其中的键是弱引用的。其键必须是对象，原始数据类型不能作为key值，而值可以是任意的。
-该对象也有以下几种方法：
+    - WeakMap 对象也是一组键值对的集合，其中的键是弱引用的。其键必须是对象，而值可以是任意的。
 
-set(key,value)：设置键名key对应的键值value，然后返回整个Map结构，如果key已经有值，则键值会被更新，否则就新生成该键。（因为返回的是当前Map对象，所以可以链式调用）
-get(key)：该方法读取key对应的键值，如果找不到key，返回undefined。
-has(key)：该方法返回一个布尔值，表示某个键是否在当前Map对象中。
-delete(key)：该方法删除某个键，返回true，如果删除失败，返回false。
+    - 该对象也有以下几种方法：
+        - set(key,value)：设置键名key对应的键值value，然后返回整个Map结构，如果key已经有值，则键值会被更新，否则就新生成该键。（因为返回的是当前Map对象，所以可以链式调用）
+        - get(key)：该方法读取key对应的键值，如果找不到key，返回undefined。
+        - has(key)：该方法返回一个布尔值，表示某个键是否在当前Map对象中。
+        - delete(key)：该方法删除某个键，返回true，如果删除失败，返回false。
+        - ~~clear()~~：已弃用，可以通过创建一个空的WeakMap并替换原对象来实现。
 
-其clear()方法已经被弃用，所以可以通过创建一个空的WeakMap并替换原对象来实现清除。
-WeakMap的设计目的在于，有时想在某个对象上面存放一些数据，但是这会形成对于这个对象的引用。一旦不再需要这两个对象，就必须手动删除这个引用，否则垃圾回收机制就不会释放对象占用的内存。
-而WeakMap的键名所引用的对象都是弱引用，即垃圾回收机制不将该引用考虑在内。因此，只要所引用的对象的其他引用都被清除，垃圾回收机制就会释放该对象所占用的内存。也就是说，一旦不再需要，WeakMap 里面的键名对象和所对应的键值对会自动消失，不用手动删除引用。
-总结：
+    - 设计目的：
+        - 有时想在某个对象上面存放一些数据，但是这会形成对于这个对象的引用。一旦不再需要这两个对象，就必须手动删除这个引用，否则垃圾回收机制就不会释放对象占用的内存。
+        - 而 WeakMap 的键名所引用的对象都是弱引用，即垃圾回收机制不将该引用考虑在内。
+        - 只要所引用的对象的其他引用都被清除，垃圾回收机制就会释放该对象所占用的内存。
+        - 也就是说，一旦不再需要，WeakMap 里面的键名对象和所对应的键值对会自动消失，不用手动删除引用。
 
-Map 数据结构。它类似于对象，也是键值对的集合，但是“键”的范围不限于字符串，各种类型的值（包括对象）都可以当作键。
-WeakMap 结构与 Map 结构类似，也是用于生成键值对的集合。但是 WeakMap 只接受对象作为键名（ null 除外），不接受其他类型的值作为键名。而且 WeakMap 的键名所指向的对象，不计入垃圾回收机制。
+- 总结：
+    - Map 数据结构。它类似于对象，也是键值对的集合，但是“键”的类型不限于字符串，值的类型不限。
+    - WeakMap 结构与 Map 结构类似，也是用于生成键值对的集合。但是 WeakMap 只接受对象作为键名（ null 除外），不接受其他类型的值作为键名。而且 WeakMap 的键名所指向的对象，不计入垃圾回收机制。
 
-4. JavaScript有哪些内置对象
-全局的对象（ global objects ）或称标准内置对象，不要和 "全局对象（global object）" 混淆。这里说的全局的对象是说在
-全局作用域里的对象。全局作用域中的其他对象可以由用户的脚本创建或由宿主程序提供。
-标准内置对象的分类：
+#### 4. JavaScript有哪些内置对象
 
 - 值属性，这些全局属性返回一个简单值，这些值没有自己的属性和方法。例如 Infinity、NaN、undefined、null 字面量
 - 函数属性，全局函数可以直接调用，不需要在调用时指定所属对象，执行结束后会将结果直接返回给调用者。例如 eval()、parseFloat()、parseInt() 等
@@ -2339,95 +2125,85 @@ WeakMap 结构与 Map 结构类似，也是用于生成键值对的集合。但�
 - 数字和日期对象，用来表示数字、日期和执行数学计算的对象。例如 Number、Math、Date
 - 字符串，用来表示和操作字符串的对象。例如 String、RegExp
 - 可索引的集合对象，这些对象表示按照索引值来排序的数据集合，包括数组和类型数组，以及类数组结构的对象。例如 Array
-- 使用键的集合对象，这些集合对象在存储数据时会使用到键，支持按照插入顺序来迭代元素。
-例如 Map、Set、WeakMap、WeakSet
-- 矢量集合，SIMD 矢量集合中的数据会被组织为一个数据序列。
-例如 SIMD 等
+- 使用键的集合对象，这些集合对象在存储数据时会使用到键，支持按照插入顺序来迭代元素。例如 Map、Set、WeakMap、WeakSet
+- 矢量集合，SIMD 矢量集合中的数据会被组织为一个数据序列。例如 SIMD 等
 - 结构化数据，这些对象用来表示和操作结构化的缓冲区数据，或使用 JSON 编码的数据。例如 JSON 等
-- 控制抽象对象
-例如 Promise、Generator 等
+- 控制抽象对象。例如 Promise、Generator 等
 - 反射。例如 Reflect、Proxy
 - 国际化，为了支持多语言处理而加入 ECMAScript 的对象。例如 Intl、Intl.Collator 等
 - WebAssembly
 - 其他。例如 arguments
-总结：
-js 中的内置对象主要指的是在程序执行前存在全局作用域里的由 js 定义的一些全局值属性、函数和用来实例化其他对象的构造函数对象。一般经常用到的如全局变量值 NaN、undefined，全局函数如 parseInt()、parseFloat() 用来实例化对象的构造函数如 Date、Object 等，还有提供数学计算的单体内置对象如 Math 对象。
 
-5. 常用的正则表达式有哪些？
-// - 匹配 16 进制颜色值
-var regex = /#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})/g;
+#### 5. 常用的正则表达式有哪些？
 
-// - 匹配日期，如 yyyy-mm-dd 格式
-var regex = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+- 匹配 16 进制颜色值
+    - `var regex = /#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})/g;`
 
-// - 匹配 qq 号
-var regex = /^[1-9][0-9]{4,10}$/g;
+- 匹配日期，如 yyyy-mm-dd 格式
+    - `var regex = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;`
 
-// - 手机号码正则
-var regex = /^1[34578]\d{9}$/g;
+- 匹配 qq 号
+    - `var regex = /^[1-9][0-9]{4,10}$/g;`
 
-// - 用户名正则
-var regex = /^[a-zA-Z\$][a-zA-Z0-9_\$]{4,16}$/;
+- 手机号码正则
+    - `var regex = /^1[34578]\d{9}$/g;`
 
-6. 对JSON的理解
-JSON 是一种基于文本的轻量级的数据交换格式。它可以被任何的编程语言读取和作为数据格式来传递。
-在项目开发中，使用 JSON 作为前后端数据交换的方式。在前端通过将一个符合 JSON 格式的数据结构序列化为
-JSON 字符串，然后将它传递到后端，后端通过 JSON 格式的字符串解析后生成对应的数据结构，以此来实现前后端数据的一个传递。
-因为 JSON 的语法是基于 js 的，因此很容易将 JSON 和 js 中的对象弄混，但是应该注意的是 JSON 和 js 中的对象不是一回事，JSON 中对象格式更加严格，比如说在 JSON 中属性值不能为函数，不能出现 NaN 这样的属性值等，因此大多数的 js 对象是不符合 JSON 对象的格式的。
-在 js 中提供了两个函数来实现 js 数据结构和 JSON 格式的转换处理，
+- 用户名正则
+    - `var regex = /^[a-zA-Z\$][a-zA-Z0-9_\$]{4,16}$/;`
 
-JSON.stringify 函数，通过传入一个符合 JSON 格式的数据结构，将其转换为一个 JSON 字符串。如果传入的数据结构不符合 JSON 格式，那么在序列化的时候会对这些值进行对应的特殊处理，使其符合规范。在前端向后端发送数据时，可以调用这个函数将数据对象转化为 JSON 格式的字符串。
-JSON.parse() 函数，这个函数用来将 JSON 格式的字符串转换为一个 js 数据结构，如果传入的字符串不是标准的 JSON 格式的字符串的话，将会抛出错误。当从后端接收到 JSON 格式的字符串时，可以通过这个方法来将其解析为一个 js 数据结构，以此来进行数据的访问。
+#### 6. 对JSON的理解
 
-7. JavaScript脚本延迟加载的方式有哪些？
-延迟加载就是等页面加载完成之后再加载 JavaScript 文件。 js 延迟加载有助于提高页面加载速度。
-一般有以下几种方式：
+- JSON 是一种基于文本的轻量级的数据交换格式。它可以被任何的编程语言读取和作为数据格式来传递。
+    - JSON.stringify 函数，将 JSON 格式的数据，转换为一个 JSON 字符串
+    - JSON.parse() 函数，将 JSON 格式的字符串，转换为一个 js 数据结构
 
-defer 属性： 给 js 脚本添加 defer 属性，这个属性会让脚本的加载与文档的解析同步解析，然后在文档解析完成后再执行这个脚本文件，这样的话就能使页面的渲染不被阻塞。多个设置了 defer 属性的脚本按规范来说最后是顺序执行的，但是在一些浏览器中可能不是这样。
-async 属性： 给 js 脚本添加 async 属性，这个属性会使脚本异步加载，不会阻塞页面的解析过程，但是当脚本加载完成后立即执行 js 脚本，这个时候如果文档没有解析完成的话同样会阻塞。多个 async 属性的脚本的执行顺序是不可预测的，一般不会按照代码的顺序依次执行。
-动态创建 DOM 方式： 动态创建 DOM 标签的方式，可以对文档的加载事件进行监听，当文档加载完成后再动态的创建 script 标签来引入 js 脚本。
-使用 setTimeout 延迟方法： 设置一个定时器来延迟加载js脚本文件
-让 JS 最后加载： 将 js 脚本放在文档的底部，来使 js 脚本尽可能的在最后来加载执行。
+#### 7. JavaScript脚本延迟加载的方式有哪些？
 
-8. JavaScript 类数组对象的定义？
-一个拥有 length 属性和若干索引属性的对象就可以被称为类数组对象，类数组对象和数组类似，但是不能调用数组的方法。常见的类数组对象有 arguments 和 DOM 方法的返回结果，还有一个函数也可以被看作是类数组对象，因为它含有 length 属性值，代表可接收的参数个数。
-常见的类数组转换为数组的方法有这样几种：
+- 延迟加载就是等页面加载完成之后再加载 JavaScript 文件。 js 延迟加载有助于提高页面加载速度。
+- 一般有以下几种方式：
+    - defer 属性： 给 js 脚本添加 defer 属性，这个属性会让脚本的加载与文档的解析同步解析，然后在文档解析完成后再执行这个脚本文件
+    - async 属性： 给 js 脚本添加 async 属性，这个属性会使脚本异步加载，不会阻塞页面的解析过程，但是当脚本加载完成后立即执行 js 脚本，这个时候如果文档没有解析完成的话同样会阻塞。
+    - 动态创建 DOM 方式： 动态创建 DOM 标签的方式，可以对文档的加载事件进行监听，当文档加载完成后再动态的创建 script 标签来引入 js 脚本。
+    - 使用 setTimeout 延迟方法： 设置一个定时器来延迟加载js脚本文件
+    - 让 JS 最后加载： 将 js 脚本放在文档的底部，来使 js 脚本尽可能的在最后来加载执行。
 
-- 通过 call 调用数组的 slice 方法来实现转换
-Array.prototype.slice.call(arrayLike);
+#### 8. JavaScript 类数组对象的定义？
 
-- 通过 call 调用数组的 splice 方法来实现转换
-Array.prototype.splice.call(arrayLike, 0);
+- 一个拥有 length 属性和若干索引属性的对象就可以被称为类数组对象，类数组对象和数组类似，但是不能调用数组的方法。
+- 常见的类数组对象有 arguments 和 DOM 方法的返回结果，还有一个函数也可以被看作是类数组对象，因为它含有 length 属性值，代表可接收的参数个数。
+- 常见的类数组转换为数组的方法有这样几种：
+    - 通过 call 调用数组的 slice 方法来实现转换
+        - `Array.prototype.slice.call(arrayLike);`
 
-- 通过 apply 调用数组的 concat 方法来实现转换
-Array.prototype.concat.apply([], arrayLike);
+    - 通过 call 调用数组的 splice 方法来实现转换
+        - `Array.prototype.splice.call(arrayLike, 0);`
 
-- 通过 Array.from 方法来实现转换
-Array.from(arrayLike);
+    - 通过 apply 调用数组的 concat 方法来实现转换
+        - `Array.prototype.concat.apply([], arrayLike);`
 
-9. 数组有哪些原生方法？
+    - 通过 Array.from 方法来实现转换
+        - `Array.from(arrayLike);`
 
-数组和字符串的转换方法：toString()、toLocalString()、join() 其中 join() 方法可以指定转换为字符串时的分隔符。
-数组尾部操作的方法 pop() 和 push()，push 方法可以传入多个参数。
-数组首部操作的方法 shift() 和 unshift() 重排序的方法 reverse() 和 sort()，sort() 方法可以传入一个函数来进行比较，传入前后两个值，如果返回值为正数，则交换两个参数的位置。
-数组连接的方法 concat() ，返回的是拼接好的数组，不影响原数组。
-数组截取办法 slice()，用于截取数组中的一部分返回，不影响原数组。
-数组插入方法 splice()，影响原数组查找特定项的索引的方法，indexOf() 和 lastIndexOf() 迭代方法 every()、some()、filter()、map() 和 forEach() 方法
-数组归并方法 reduce() 和 reduceRight() 方法
+#### 9. 数组有哪些原生方法？
 
-10. Unicode、UTF-8. UTF-16. UTF-32的区别？
+1. 数组和字符串的转换方法：toString()、toLocalString()、join() 其中 join() 方法可以指定转换为字符串时的分隔符。
+2. 数组尾部操作的方法 pop() 和 push()，push 方法可以传入多个参数。
+3. 数组首部操作的方法 shift() 和 unshift()。
+4. 重排序的方法 reverse() 和 sort()，sort() 方法可以传入一个函数来进行比较，传入前后两个值，如果返回值为正数，则交换两个参数的位置。
+5. 数组连接的方法 concat() ，返回的是拼接好的数组，不影响原数组。
+6. 数组截取办法 slice()，用于截取数组中的一部分返回，不影响原数组。
+7. 数组插入方法 splice()，影响原数组查找特定项的
+8. 索引的方法，indexOf() 和 lastIndexOf() 
+9. 迭代方法 every()、some()、filter()、map() 和 forEach() 方法
+10. 数组归并方法 reduce() 和 reduceRight() 方法
 
+#### 10. Unicode、UTF-8. UTF-16. UTF-32的区别？
+- ASCII码：ASCII 码（American Standard Code for Information Interchange）称为美国标准信息交换码。
+    * 它包含了"A-Z"(包含大小写)，数据"0-9" 以及一些常见的符号。
+    * 它是专门为英语而设计的，有128个编码，对其他语言无能为力
 - Unicode
-在说Unicode之前需要先了解一下ASCII码：ASCII 码（American Standard Code for Information Interchange）称为美国标准信息交换码。
-
-它是基于拉丁字母的一套电脑编码系统。
-它定义了一个用于代表常见字符的字典。
-它包含了"A-Z"(包含大小写)，数据"0-9" 以及一些常见的符号。
-它是专门为英语而设计的，有128个编码，对其他语言无能为力
-
-ASCII码可以表示的编码有限，要想表示其他语言的编码，还是要使用Unicode来表示，可以说Unicode是ASCII 的超集。
-Unicode全称 Unicode Translation Format，又叫做统一码、万国码、单一码。Unicode 是为了解决传统的字符编码方案的局限而产生的，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，以满足跨语言、跨平台进行文本转换、处理的要求。
-Unicode的实现方式（也就是编码方式）有很多种，常见的是UTF-8. UTF-16. UTF-32和USC-2。
+    - Unicode全称 Unicode Translation Format，又叫做统一码、万国码、单一码。Unicode 是为了解决传统的字符编码方案的局限而产生的，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，以满足跨语言、跨平台进行文本转换、处理的要求。
+    - Unicode的实现方式（也就是编码方式）有很多种，常见的是UTF-8. UTF-16. UTF-32和USC-2。
 
 - UTF-8
 UTF-8是使用最广泛的Unicode编码方式，它是一种可变长的编码方式，可以是1—4个字节不等，它可以完全兼容ASCII码的128个字符。
@@ -2458,9 +2234,9 @@ UTF-8的编码规则：
 在了解UTF-16之前，先看一下平面的概念：
 Unicode编码中有很多很多的字符，它并不是一次性定义的，而是分区进行定义的，每个区存放65536- 个字符，这称为一个平面，目前总共有17 个平面。
 最前面的一个平面称为基本平面，它的码点从0 — 216-1，写成16进制就是U+0000 — U+FFFF，那剩下的16个平面就是辅助平面，码点范围是 U+10000—U+10FFFF。
-2. UTF-16 概念：
+1. UTF-16 概念：
 UTF-16也是Unicode编码集的一种编码形式，把Unicode字符集的抽象码位映射为16位长的整数（即码元）的序列，用于数据存储或传递。Unicode字符的码位需要1个或者2个16位长的码元来表示，因此UTF-16也是用变长字节表示的。
-3. UTF-16 编码规则：
+1. UTF-16 编码规则：
 
 编号在 U+0000—U+FFFF 的字符（常用字符集），直接用两个字节表示。
 编号在 U+10000—U+10FFFF 之间的字符，需要用四个字节表示。
