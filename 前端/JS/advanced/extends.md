@@ -3,7 +3,7 @@
 ## 两条继承链
 
 （1）子类的 \_\_proto\_\_ 属性，表示构造函数的继承，总是指向父类。
-（2）子类prototype属性的 \_\_proto\_\_ 属性，表示方法的继承，总是指向父类的prototype属性。
+（2）子类的 prototype 属性的 \_\_proto\_\_ 属性，表示方法的继承，总是指向父类的 prototype 属性。
 
 ## Prototype-based inheritance VS Class-based inheritance
 
