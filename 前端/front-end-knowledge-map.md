@@ -3066,7 +3066,9 @@
 
 #### 1. React 事件机制
 
+```js
 <div onClick={this.handleClick.bind(this)}>点我</div>
+```
 
 React并不是将click事件绑定到了div的真实DOM上，而是在document处监听了所有的事件，当事件发生并且冒泡到document处的时候，React将事件内容封装并交由真正的处理函数运行。这样的方式不仅仅减少了内存的消耗，还能在组件挂在销毁时统一订阅和移除事件。
 除此之外，冒泡到document上的事件也不是原生的浏览器事件，而是由react自己实现的合成事件（SyntheticEvent）。因此如果不想要是事件冒泡的话应该调用event.preventDefault()方法，而不是调用event.stopProppagation()方法。
@@ -7327,6 +7329,8 @@ WebSocket > 长连接（SEE） > 长轮询 > 短轮询
 但是，我们如果考虑浏览器的兼容性问题，顺序就恰恰相反了：
 短轮询 > 长轮询 > 长连接（SEE） > WebSocket
 所以，还是要根据具体的使用场景来判断使用哪种方式。
+
+### 安全
 
 ## 浏览器原理
 
@@ -12675,12 +12679,6 @@ console.log(instance.getSuperValue());
 
 ## TypeScript
 
+## 设计模式
+
 ## 数据结构与算法
-
-## 安全
-
-## Node
-
-## 项目/业务
-
-## 其他
