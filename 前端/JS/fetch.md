@@ -1,12 +1,12 @@
 # fetch
 
 - 不建议使用
-  - 原生函数，不使用 XmlHttpRequest 对象提交 ajax 请求
-  - [Promise](尚硅谷Promise从入门到自定义.md) 风格
-  - [关注分离](../../设计模式/关注分离.md)
-  - 老版本浏览器不支持
+    - 原生函数，不使用 XmlHttpRequest 对象提交 ajax 请求
+    - [Promise](尚硅谷Promise从入门到自定义.md) 风格
+    - [关注分离](../../设计模式/关注分离.md)
+    - 老版本浏览器不支持
 - API
-  - GET请求
+    - GET请求
 
     ```js
     fetch(url).then(function(response) {
@@ -18,7 +18,7 @@
       });
     ```
 
-  - POST请求
+    - POST请求
 
     ```js
       fetch(url, {
@@ -32,7 +32,7 @@
     ```
 
 - 示例
-  - 未优化
+    - 未优化
 
     ```js
     fetch(`/api1/search/users2?q=${keyWord}`).then(
@@ -50,7 +50,7 @@
     )
     ```
 
-  - 优化 1: 统一处理错误信息
+    - 优化 1: 统一处理错误信息
 
     ```js
     fetch(`/api1/search/users2?q=${keyWord}`).then(
@@ -65,7 +65,7 @@
     )
     ```
 
-  - 优化 2: .then不指定失败的回调，利用 try catch 接收错误信息
+    - 优化 2: .then不指定失败的回调，利用 try catch 接收错误信息
 
     ```js
     try {
