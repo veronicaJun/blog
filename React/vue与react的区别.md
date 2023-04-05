@@ -20,7 +20,7 @@
         3. 卸载组件: 由ReactDOM.unmountComponentAtNode()触发
             - componentWillUnmount()
 
-    **重要的勾子**
+    重要的勾子
         - render：初始化渲染或更新渲染调用
         - componentDidMount：开启监听, 发送ajax请求
         - componentWillUnmount：做一些收尾工作, 如: 清理定时器

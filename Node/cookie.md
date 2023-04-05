@@ -5,14 +5,18 @@
 ## 2.1 cookie 是什么
 
 cookie 是 HTTP 服务器发送到用户浏览器并保存在本地的一小块数据
-**cookie 是保存在浏览器端的一小块数据**
-**cookie 是按照域名划分保存的**
+cookie 是保存在浏览器端的一小块数据
+cookie 是按照域名划分保存的
 简单示例:
 ![img](./assets/16789529000729.jpg)
 
 ## 2.2 cookie 的特点
 
-浏览器向服务器发送请求时，会自动将 **当前域名下** 可用的 cookie 设置在请求头中，然后传递给服务器，这个请求头的名字也叫 **cookie** ，所以将 **cookie 理解为一个 HTTP 的请求头也是可以的**
+浏览器向服务器发送请求时，会自动将当前域名下可用的 cookie 设置在请求头中，然后传递给服务器，这个请求头的名字也叫 cookie ，所以将 cookie 理解为一个 HTTP 的请求头也是可以的
+
+- 缺点:
+  1. Cookie 数量和长度的限制。
+  2. 安全性问题.
 
 ## 2.3 cookie 的运行流程
 
@@ -31,7 +35,7 @@ cookie 是 HTTP 服务器发送到用户浏览器并保存在本地的一小块�
 
 ## 2.5 cookie 的代码操作
 
-express中可以使用 **cookie-parser** 进行处理
+express中可以使用 cookie-parser 进行处理
 
 ```js
 const express =require('express');

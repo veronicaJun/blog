@@ -2,7 +2,7 @@
 
 ## 3.1 session 是什么
 
-session 是保存在 **服务器端的一块儿数据** ，保存当前访问用户的相关信息
+session 是保存在 服务器端的一块儿数据 ，保存当前访问用户的相关信息
 
 ## 3.2 session 的作用
 
@@ -10,15 +10,15 @@ session 是保存在 **服务器端的一块儿数据** ，保存当前访问用
 
 ## 3.3 session 运行流程
 
-填写账号和密码校验身份，校验通过后创建 **session 信息** ，然后将 **session_id** 的值通过响应头返回给浏览器
+填写账号和密码校验身份，校验通过后创建 session 信息 ，然后将 session_id 的值通过响应头返回给浏览器
 ![img](./assets/16789535367237.jpg)
 
-有了cookie，下次发送请求时会**自动**携带cookie，服务器通过 **cookie** 中的 **session_id** 的值确定用户的身份
+有了cookie，下次发送请求时会自动携带cookie，服务器通过 cookie 中的 session_id 的值确定用户的身份
 ![img](./assets/16789535601147.jpg)
 
 ## 3.4 session 的代码操作
 
-express中可以使用 **express-session** 对session进行操作
+express中可以使用 express-session 对session进行操作
 
 ```js
 const express = require('express');

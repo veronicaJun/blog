@@ -46,17 +46,17 @@ npm i express
     nodemon <文件名>
     ```
 
-3. 然后在浏览器就可以访问 **<http://127.0.0.1:3000/home>**
+3. 然后在浏览器就可以访问 <http://127.0.0.1:3000/home>
 
 ## 三、express 路由
 
 ### 3.1 什么是路由
 
-官方定义:**路由确定了应用程序如何响应客户端对特定端点的请求**
+官方定义:路由确定了应用程序如何响应客户端对特定端点的请求
 
 ### 3.2 路由的使用
 
-一个路由的组成有, **请求方法**  **路径** 和 **回调函数**组成
+一个路由的组成有, 请求方法  路径 和 回调函数组成
 express 中提供了一系列方法，可以很方便的使用路由，使用格式如下:
 
 ```js
@@ -131,7 +131,7 @@ app.listen(3000, () => {
 
 ### 3.4 获取路由参数
 
-路由参数指的是**URL 路径中的参数(数据)**
+路由参数指的是URL 路径中的参数(数据)
 
 ```js
 app.get('/:id.html', (req, res) => { 
@@ -175,12 +175,12 @@ app.get("/response", (req, res) => {
 
 ### 5.1 什么是中间件
 
-**中间件(Middleware)本质是一个回调函数**
-**中间件函数** 可以像路由回调一样访问 **请求对象(request)** ， **响应对象(response)**
+中间件(Middleware)本质是一个回调函数
+中间件函数 可以像路由回调一样访问 请求对象(request) ， 响应对象(response)
 
 ### 5.2 中间件的作用
 
-**中间件的作用** 就是 **使用函数封装公共操作，简化代码**
+中间件的作用 就是 使用函数封装公共操作，简化代码
 
 ### 5.3 中间件的类型
 
@@ -189,7 +189,7 @@ app.get("/response", (req, res) => {
 
 #### 5.3.1 定义全局中间件
 
-**每一个请求** 到达服务端之后 **都会执行全局中间件函数**
+每一个请求 到达服务端之后 都会执行全局中间件函数
 声明中间件函数
 
 ```js
@@ -210,7 +210,7 @@ let recordMiddleware = function(request,response,next){
 app.use(recordMiddleware);
 ```
 
-声明时可以直接将匿名函数传递给 **use**
+声明时可以直接将匿名函数传递给 use
 
 ```js
 app.use(function (request, response, next) { 
@@ -236,7 +236,7 @@ app.use(function (request, response, next) {
 
 #### 5.3.3 定义路由中间件
 
-如果 **只需要对某一些路由进行功能封装** ，则就需要路由中间件
+如果 只需要对某一些路由进行功能封装 ，则就需要路由中间件
 调用格式如下:
 
 ```js
@@ -278,7 +278,7 @@ app.listen(3000,()=>{
 
 ### 5.5 获取请求体数据 body-parser
 
-express可以使用 **body-parser** 包处理请求体
+express可以使用 body-parser 包处理请求体
 第一步:安装
 
 ```js
@@ -300,7 +300,7 @@ let urlParser = bodyParser.urlencoded({extended:false}));
 let jsonParser = bodyParser.json();
 ```
 
-第四步:设置路由中间件，然后使用 **request.body** 来获取请求体数据
+第四步:设置路由中间件，然后使用 request.body 来获取请求体数据
 
 ```js
 app.post('/login', urlParser, (request,response)=>{ 
@@ -396,7 +396,7 @@ app.listen(3000,()=>{
 
 ### 7.1 什么是模板引擎
 
-模板引擎是分离 **用户界面和业务数据** 的一种技术
+模板引擎是分离 用户界面和业务数据 的一种技术
 
 ### 7.2 什么是 EJS
 
@@ -496,7 +496,7 @@ require('ejs').render(`
 
 ## 文件上传
 
-form 表单必须添加 **enctype="nultipart/form-data"**
+form 表单必须添加 enctype="nultipart/form-data"
 
 ### formidable
 

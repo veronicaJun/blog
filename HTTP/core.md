@@ -24,14 +24,14 @@ CORS 是通过设置一个响应头来告诉浏览器，该请求允许跨域，
     * 请求方法为 GET、POST 或者 HEAD
     * 请求头的取值范围: Accept、Accept-Language、Content-Language、Content-Type(只限于三个值application/x-www-form-urlencoded、multipart/form-data、text/plain)
 
-    浏览器发送请求, 携带 **Origin** 字段,
+    浏览器发送请求, 携带 Origin 字段,
     服务端返回 Access-Control-Allow-Origin,
     如果 Origin 不在字段中被拦截.
 
 2. 非简单请求:
-    浏览器发送 **OPTIONS** 请求,携带 **Origin**, **Host**, **Access-Control-Request-Methods**, **Access-Control-Request-Headers**
-    服务端返回 **Access-Control-Allow-Origin**, **Access-Control-Allow-Methods**, **Access-Control-Allow-Headers**, **Access-Control-Allow-Credentials**,
-    **Access-Control-Max-Age**
+    浏览器发送 OPTIONS 请求,携带 Origin, Host, Access-Control-Request-Methods, Access-Control-Request-Headers
+    服务端返回 Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Headers, Access-Control-Allow-Credentials,
+    Access-Control-Max-Age
     如果请求不满足响应头的条件,则拦截
 
 3. 请求头:

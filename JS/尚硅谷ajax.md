@@ -7,7 +7,7 @@
 ### 1.1 AJAX 简介
 
 AJAX 全称为 Asynchronous JavaScript And XML，就是异步的 JS 和 XML。
-通过 AJAX 可以在浏览器中向服务器发送异步请求，最大的优势:**无刷新获取数据**。
+通过 AJAX 可以在浏览器中向服务器发送异步请求，最大的优势:无刷新获取数据。
 AJAX 不是新的编程语言，而是一种将现有的标准组合在一起使用的新方式。
 
 ### 1.2 XML 简介
@@ -117,8 +117,8 @@ XMLHttpRequest，AJAX 的所有操作都是通过该对象进行的。
 
 #### 1.4.3 解决 IE 缓存问题
 
-**问题:** 在一些浏览器中(IE),由于缓存机制的存在，ajax 只会发送的第一次请求，剩余多次请求不会再发送给浏览器而是直接加载缓存中的数据。
-**解决方式:** 浏览器的缓存是根据 url 地址来记录的，所以我们只需要修改 url 地址 即可避免缓存问题
+问题: 在一些浏览器中(IE),由于缓存机制的存在，ajax 只会发送的第一次请求，剩余多次请求不会再发送给浏览器而是直接加载缓存中的数据。
+解决方式: 浏览器的缓存是根据 url 地址来记录的，所以我们只需要修改 url 地址 即可避免缓存问题
 
 ```js
 xhr.open("get","/testAJAX?t=" + Date.now());
@@ -129,11 +129,11 @@ xhr.open("get","/testAJAX?t=" + Date.now());
 xhr.readyState 可以用来查看请求当前的状态
 <https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/readyState>
 
-* **0** 表示 XMLHttpRequest 实例已经生成，但是 open()方法还没有被调用。
-* **1** 表示 send()方法还没有被调用，仍然可以使用 setRequestHeader()，设定 HTTP请求的头信息。
-* **2** 表示 send()方法已经执行，并且头信息和状态码已经收到。
-* **3** 表示正在接收服务器传来的 body 部分的数据。
-* **4** 表示服务器数据已经完全接收，或者本次接收已经失败了
+* 0 表示 XMLHttpRequest 实例已经生成，但是 open()方法还没有被调用。
+* 1 表示 send()方法还没有被调用，仍然可以使用 setRequestHeader()，设定 HTTP请求的头信息。
+* 2 表示 send()方法已经执行，并且头信息和状态码已经收到。
+* 3 表示正在接收服务器传来的 body 部分的数据。
+* 4 表示服务器数据已经完全接收，或者本次接收已经失败了
 
 ## 第 2 章:jQuery 中的 AJAX
 
