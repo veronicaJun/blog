@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ch-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style lang="css">
+      .div {
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="position: relative; top: 30px">
+      <div
+        class="div"
+        style="
+          background-color: aqua;
+          width: 200px;
+          height: 200px;
+          padding: 20px;
+          border: 20px solid yellowgreen;
+          box-sizing: content-box;
+          margin: 20px;
+        "
+      >
+        <div style="height: 300px; background-color: burlywood"></div>
+      </div>
+    </div>
+    <script>
+      var dom = document.querySelector(".div");
+      console.log(dom.style.boxSizing);
+
+      console.log(" ----------style---------- ");
+      console.log(
+        dom.style.width,
+        dom.style.height,
+        dom.style.top,
+        dom.style.bottom,
+        dom.style.left,
+        dom.style.right
+      );
+
+      console.log(" ----------computed---------- ");
+      var computed = window.getComputedStyle(dom);
+      console.log(
+        computed.width,
+        computed.height,
+        computed.top,
+        computed.bottom,
+        computed.left,
+        computed.right
+      );
+
+      console.log(" ----------bound---------- ");
+      var bound = dom.getBoundingClientRect();
+      console.log(
+        bound.width,
+        bound.height,
+        bound.top,
+        bound.bottom,
+        bound.left,
+        bound.right
+      );
+
+      console.log(" ----------offset---------- ");
+      console.log(
+        dom.offsetWidth,
+        dom.offsetHeight,
+        dom.offsetTop,
+        dom.offsetBottom,
+        dom.offsetLeft,
+        dom.offsetRight
+      );
+
+      console.log(" ----------client---------- ");
+      console.log(
+        dom.clientWidth,
+        dom.clientHeight,
+        dom.clientTop,
+        dom.clientBottom,
+        dom.clientLeft,
+        dom.clientRight
+      );
+    </script>
+  </body>
+</html>

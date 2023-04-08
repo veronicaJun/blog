@@ -7,11 +7,17 @@
 - 背景：origin、clip、size、多背景图
 - 边框：border-radius、outline、
 - 多列布局 （multi-column layout）
-- web 字体
+- 文字：web 字体，换行
 - 文本：text-shadow，white-space，text-overflow，text-decoration
-- 线性渐变 ：gradient
+- 过渡（transition）
+- 动画(animation，keyframes)
 - 2D,3D变换：transform（位移、缩放、旋转、扭曲）
-- 过渡（transform）和动画(animation，keyframes)
 - 伸缩盒子（flex）
+- 栅格布局（grid）
+- 多列布局
 - 媒体查询（media）
 - BFC
+- 阴影
+- 反射
+- 线性渐变 ：gradient
+- 滤镜

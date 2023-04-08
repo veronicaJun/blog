@@ -12,17 +12,6 @@
     - table：此元素会作为块级表格来显示。
     - inherit：规定应该从父元素继承display属性的值。
 
-- 对于行内元素和块级元素，其特点如下：
-    - 行内元素
-        - 设置宽高无效；
-        - 可以设置水平方向的 margin 和 padding 属性，垂直方向无效；
-        - 不会自动换行；
-    - 块级元素
-        - 可以设置宽高；
-        - 设置 margin 和 padding 都有效；
-        - 可以自动换行；
-        - 多个块状，默认排列从上到下。
-
 - display:none与visibility:hidden的区别
     - 在渲染树中
         - `display:none`会让元素完全从渲染树中消失，渲染时不会占据任何空间；
@@ -32,3 +21,10 @@
         - `visibility:hidden`是继承属性，子孙节点消失是由于继承了hidden，通过设置`visibility:visible`可以让子孙节点显示；
     - 修改常规文档流中元素的 `display` 通常会造成文档的重排，但是修改`visibility`属性只会造成本元素的重绘；
     - 如果使用读屏器，设置为`display:none`的内容不会被读取，设置为`visibility:hidden`的内容会被读取。
+
+- display、float、position
+
+    1. 首先，`display:none`优先级最高，position 和 float 的值都不生效；
+    2. 其次，`position:absolute`和`position:fixed`，浮动失效，调整`display`的值为 table 或 block；
+    3. 再次，`float != none`或者根元素生效，调整`display`的值为 table 或 block；
+    4. 最后，非根元素，并且非浮动元素，并且非绝对定位的元素，`display`的值生效。

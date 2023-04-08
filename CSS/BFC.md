@@ -14,7 +14,7 @@
     2. 浮动造成的高度塌陷
     3. 自适用两列布局
 3. 触发条件
-    1. 根元素
+    1. 根元素html
     2. float, 有且不为 none
     3. position 为 absolute, fixed
     4. display 为 table-caption, table-cell, inline-bolck, flex, flow-root
