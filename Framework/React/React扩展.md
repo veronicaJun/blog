@@ -1,6 +1,6 @@
 # React扩展
 
-[Toc]
+
 
 ## 1.setState更新状态的2种写法
 

@@ -1,6 +1,6 @@
 # cookie
 
-[toc]
+
 
 ## 2.1 cookie 是什么
 

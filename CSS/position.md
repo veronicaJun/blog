@@ -3,6 +3,14 @@
 - 关键字
     #CSS布局
     #流式布局
+- 解答
+    - 初阶：
+        - 能完整说出 position 可选值，包括：static/absolute/relative/fixed/sticky，以及他们的布局特性
+    - 中阶：
+        - 在初阶基础上，能说出CSS 布局、定位的基本方法，比如：流式布局；
+        - 能说出不同布局的性能特性
+    - 高阶：能关联，说出一些 css 布局实现原理，例如 Composite Layers 概念
+
 - position 的值
     - inherit
         - 规定从父元素继承position属性的值

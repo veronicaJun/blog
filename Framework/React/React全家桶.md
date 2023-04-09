@@ -1,6 +1,6 @@
 # React全家桶
 
-[Toc]
+
 
 ## 第1章：React入门
 

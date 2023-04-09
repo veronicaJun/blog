@@ -1,5 +1,14 @@
 # instanceof
 
+- 关键字
+    #类型判断
+    #原型继承
+- 解答
+    - 初阶：typeof、instanceof、
+    - 中阶：能扩展开来讲其它类型判断方法：Object.prototype.toString.call()、obj.constructor === F，以及他们的区别；能讲解 instanceof 底层判定逻辑，并扩展开来聊聊JS 基于原型的OOP 机制
+    - 高阶：
+        - 能聊聊JS基于原型 OOP 与其它语言(如 C#、Java)OOP 设计上有什么区别，有什么优劣势，表达能力是否能对齐；
+        - 能聊聊 OOP、FP、面向过程编程的特点
 - 写法：`obj_a instanceof obj_b`
 - 作用：
     - 判断对象 A 的类型是否为对象 B。（A 原型链中能否找到 B 的原型）

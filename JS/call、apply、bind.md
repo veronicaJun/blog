@@ -1,5 +1,23 @@
 # call、apply、bind
 
+- 关键字
+    #this
+- 解答
+    ● 初阶：主要作用都是改变函数执行时的 this 对象；
+        ○ 相同点：
+            都能 改变函数执行时的上下文；
+            都只作用于 Function，对箭头函数无效；
+        ○ 区别：参数的写法：
+            ■ fn.apply(_this, [arg1, arg2, ...])
+            ■ fn.call(_this, arg1, arg2, ...)
+    ● 中阶：能说出一些适用场景，例如数组合并，可以使用:
+        ○ const res = a1.concat(a2)，但会产生新的数组，空间复杂度高；
+        ○ const res = a1.push(...a2)，依赖于 ES6
+        ○ Array.prototype.push.apply(a1, a2)
+    ● 高阶：
+        能讲出this关键词的概念，以及不同调用方式下如何确定 this 值；
+        能引出函数执行上下文概念，简单介绍不同上下文(全局、函数、eval)
+
 1. call() 和 apply()
     - 共同点：
         - 改变函数执行时的上下文，将一个对象的方法交给另一个对象来执行，并且是立即执行的。
