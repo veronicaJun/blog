@@ -1,22 +1,110 @@
-# Loader 原理
+# loader
 
-解题：
-● 初阶：知道 Loader 是什么，以及怎么配置，怎么用
-  ○ 最最核心的功能，就是做内容翻译，例如可以将 图片 转译成 Base64
-● 中阶：对 Loader 机制有认知
-  ○ 为什么需要 Loader？因为 webpack 只能处理标准 JS 内容(Webpack 5 之后，原生支持图片、JSON 等常见资源文件)
-  ○ 性能可能会有问题
-  ○ 什么是 Pitch 函数，有什么作用，为什么要这么设计
-  ○ Loader 链式调用的核心逻辑是怎么样的
-![img](./assets/2023-04-08-12-38-29.png)
-● 高阶：知道怎么开发一个 Loader
-  ○ Loader 与 Plugin 的区别
-  ○ 怎么开发一个 Loader —— function(content: String | AST) => String | AST | undefined
-  ○ 有哪些常见的 Loader 开发工具 —— 单元测试工具、Loader-utils、schema-utils 等
-知识点：
-![img](./assets/2023-04-08-12-38-51.png)
-● 本质上是一种带副作用的内容转移器
-● 建议多看几个常用 Loader 的源码，包括 img-loader、file-loader、ts-loader、babel-loader、eslint-loader 等
+- 解题：
+    - 初阶：知道 Loader 是什么，以及怎么配置，怎么用
+        - 最最核心的功能，就是做内容翻译，例如可以将 图片 转译成 Base64
+    - 中阶：对 Loader 机制有认知
+        - 为什么需要 Loader？因为 webpack 只能处理标准 JS 内容(Webpack 5 之后，原生支持图片、JSON 等常见资源文件)
+        - 性能可能会有问题
+        - 什么是 Pitch 函数，有什么作用，为什么要这么设计
+        - Loader 链式调用的核心逻辑是怎么样的
+    ![img](./assets/2023-04-08-12-38-29.png)
+    - 高阶：知道怎么开发一个 Loader
+        - Loader 与 Plugin 的区别
+        - 怎么开发一个 Loader
+            - function(content: String | AST) => String | AST | undefined
+        - 有哪些常见的 Loader 开发工具
+            - 单元测试工具、Loader-utils、schema-utils 等
+    知识点：
+        - ![img](./assets/2023-04-08-12-38-51.png)
+        - 本质上是一种带副作用的内容转移器
+        - 建议多看几个常用 Loader 的源码，包括 img-loader、file-loader、ts-loader、babel-loader、eslint-loader 等
+
+- 基础
+    - what
+        - 内容转译器
+            - webpack 只识别 JS 格式，loader 将各式各样的资源转化为标准 JavaScript 内容格式
+        - 原理
+            - loader 的参数
+                - source 资源输入
+                    - 资源文件的内容或上一个 loader 的输出
+                - sourceMap
+                    - 代码的 sourceMap
+                - data
+                    - 其他在 loader 链中传递的数据
+            - loader 的返回值
+                - 通过 return 直接返回转译后的内容
+                - 通过 this.callback(err, content, sourceMap, meta) 返回
+            - 异步
+                1. 通过 `this.async()` 获取异步回调函数，将 loader 设置为异步模式，挂起当前执行队列，直到异步回调函数 callback 被调用。
+                    - `const callback = this.async()`
+                2. 将资源转译
+                3. 调用异步回调函数
+                    - `callback(err, content, sourceMap, meta)`
+        - 缓存
+            - loader 的缓存机制
+                - loader 的缓存机制是基于文件级别的，即只要文件内容不变，webpack 就不会重新执行 loader
+                - 但是如果 loader 有副作用，比如写入文件，那么就需要在 loader 中自己实现缓存机制
+
+        - 上下文与副作用
+            - 上下文通过 this 获取
+                - getOptions 获取 loader 的配置项
+                - emitWarning 发出警告
+                - emitError 发出错误，不中断打包
+                - resourcePath 资源路径
+                - emitFile 发出文件
+                - addContextDependency 添加上下文依赖，会导致资源重新编译
+        - 链式调用
+            - loader 的链式调用是通过 pipeline 的方式实现的，即上一个 loader 的输出会作为下一个 loader 的输入
+            - loader 的问题
+                - 一旦启动，就会一直执行到链式调用结束，除非抛出异常
+                - 某些不关心资源内容，只关心资源路径的 loader，需要等待内容读取之后才能执行，就会浪费时间
+        - pitch
+            - 可以解决 loader 的链式调用的问题
+            - what
+                - 参数
+                    - remainingRequest
+                        - 剩余的 loader 链
+                    - precedingRequest
+                        - 前置的 loader 链
+                    - data
+                        - 其他在 loader 链中传递的数据
+                - ![img](./assets/2023-04-09-14-32-01.png)
+            - why
+                - 阻断 loader 链的执行
+                    - 可以通过 return false 来阻断 loader 链的执行
+                - eg：style-loader
+        - 性能问题
+            - loader 的缓存机制会导致性能问题，因为 loader 的执行是在主线程上执行的，如果 loader 执行时间过长，就会导致主线程阻塞，从而影响 webpack 的打包速度
+                - 可以通过 this.cacheable(false) 来禁用 loader 的缓存机制
+            - loader 的链式调用会导致性能问题，因为每个 loader 都需要执行一次 pitch 函数，如果 loader 链过长，就会导致性能问题
+            - 可以通过 `thread-loader` 来解决这个问题(webpack 5 多进程打包机制)
+- 开发技巧
+    - 工具
+        - loader-utils
+            - 获取 loader 的配置项
+            - 获取资源路径
+            - requestString 序列化与反序列化
+            - 计算资源的 hash 值
+        - schema-utils
+            - 验证 loader 的配置项
+        - 单元测试
+            - 如何运行 loader
+                - 在 node 环境下运行调用 Webpack 接口
+                - 编写一系列 mock 方法，搭建起一个模拟的 Webpack 运行环境
+            - 如何断言 loader 的输出
+                - 调用 Jest 的 expect(xxx).toMatchSnapshot() 断言判断当前运行结果是否与之前的运行结果一致，从而确保多次修改的结果一致性，很多框架都大量用了这种方法
+                - 解读资源内容，判断是否符合预期
+            - 如何判断 loader 是否抛出异常
+                - 可以从 stats 对象解析
+                - 可以 expect(xxx).toMatchSnapshot() 断言，用快照对比更新前后的结果。
+        - 调试
+            - ndb 断点调试
+            - npm link 调试
+            - resolveLoader 配置调试
+
+
+
 
 ## loader 概念
 
