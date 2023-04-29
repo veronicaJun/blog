@@ -1,0 +1,70 @@
+# plugin
+
+- Webpack 插件机制
+    - 解题：
+        - 初阶：
+            - Webpack 运行过程中会不断触发各种钩子，插件可以注册这些钩子，在回调中执行处理逻辑
+            - 钩子回调中可以拿到各种上下文对象
+            - 通常还可以补充一下插件跟 loader 的区别
+        - 中阶：
+            - webpack 的架构 —— webpack 只实现了核心逻辑，大部分工作都抛出来交由插件实现，例如：
+                - HMR —— HotModuleReplacementPlugin
+                - MF —— ModuleFerationPlugin
+                - 压缩 —— terser-webpack-plugin
+            - 类型：而钩子的类型是非常丰富的：异步、同步、waterfall、循环、并行、熔断等等，用于兼容不同场景
+            - 示例：常用的 compiler.compilation/compilation.hooks.make/seal 等等，不同钩子其实也代表着webpack 运行到不同阶段
+            - 优点：提升灵活度，降低入门门槛等，所以生态可以发展的很快
+            - 缺点：设计复杂度高，时序混乱
+        - 高阶：
+            - 可以聊聊真实的、复杂插件开发经历
+            - 可以聊聊你看过的，比较复杂的插件，是怎么实现的
+- webpack 插件机制
+    - 是什么
+        - 形式上是一个带 apply 函数的类
+    - tapable
+        - webpack 插件架构的核心支架
+        - 基本用法
+            - 创建钩子实例
+            - 调用订阅接口注册回调（tap/tapAsync/tapPromise
+            - 调用发布接口触发回调（call/callAsync/promise）
+    - 钩子
+        - 分类
+            - 按回调逻辑分
+                - waterfall 类：回调函数的返回值会传递给下一个回调函数
+                - bail 类：熔断，回调函数的返回值不为 undefined 时，会跳过剩下的回调函数
+                - loop 类：循环，回调函数返回 true 时，会重复执行
+                - 基础类：回调函数的返回值会被忽略
+            - 按并行方式分
+                - 同步钩子
+                    - bail 类：在某个回调函数返回值不为 undefined 时，熔断，并返回该回调函数的返回值
+                        - 使用场景：用在发布者需要关心订阅者的返回值的场景
+                    - waterfall 类：回调函数的返回值会传递给下一个回调函数，最后一个回调函数的返回值会作为发布函数的返回值
+                        - 注：初始化、发布调用时必须传入一个初始值
+                    - loop 类：串行 + 循环
+                - 异步钩子
+                    - series 类：串行 + 异步，不关心回调结果
+                    - seriesBail：串行 + 熔断
+                    - seriesLoop：串行 + 循环
+                    - seriesWaterfall：串行 + 瀑布流
+                    - parallel：并行 + 异步
+                    - parallelBail：并行 + 熔断
+        - 注：不同的钩子，回调的写法，插件之间的互通关系不同
+    - 动态编译
+        - 在钩子发布函数时，根据钩子类型、参数、回调队列等动态生成一个函数
+    - 高级特性
+        - Intercept
+        - HookMap
+    - 插件架构
+        - 接口
+        - 输入
+        - 输出
+    - 构建对象
+        - compiler：完整的 Webpack 环境配置，包含 options、loaders、plugins、hooks 等等完整信息
+            - compiler.options 可以访问本次启动 webpack 时候所有的配置文件，包括但不限于 loaders、entry、 output、 plugin 等等完整配置信息。
+            - compiler.inputFileSystem 和 compiler.outputFileSystem 可以进行文件操作，相当于 Nodejs 中 fs。
+            - compiler.hooks 可以注册 tapable 的不同种类 Hook，从而可以在 compiler 生命周期中植入不同的逻辑。
+        - compilation：每次文件变化重新编译都会生成一个新的 compilation 对象，包含了本次编译的所有内容。
+            - compilation.modules 可以访问所有模块，打包的每一个文件都是一个模块。
+            - compilation.chunks chunk 即是多个 modules 组成而来的一个代码块。入口文件引入的资源组成一个 chunk，通过代码分割的模块又是另外的 chunk。
+            - compilation.assets 可以访问本次打包生成所有文件的结果。
+            - compilation.hooks 可以注册 tapable 的不同种类 Hook，用于在 compilation 编译模块阶段进行逻辑添加以及修改。
