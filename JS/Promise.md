@@ -267,3 +267,12 @@
     }
     }
     ```
+
+10. 在数组中使用 async/await
+    - map, reduce, forEach 不支持 async/await, 返回的是 一个 promise 数组，需要在外层 Promise.all 才能保证全部执行完，再执行后面的操作。
+
+    ```js
+    let res = Promise.all(arr.map(async (item)=>{
+        return await {...item} //这里写需要异步的操作
+    }))
+    ```
