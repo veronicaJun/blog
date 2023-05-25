@@ -433,31 +433,17 @@
     networks:
     node-network:
         driver: bridge
-    storage: ./storage
-    auth:
-    htpasswd:
-        file: ./conf/htpasswd
-    uplinks:
-    npmjs:
-        url: https://registry.npm.taobao.org/
-    packages:
-    '@*/*':
-        access: $all
-        publish: $authenticated
-        proxy: npmjs
-    '**':
-        proxy: npmjs
-    logs:
-    - {type: stdout, format: pretty, level: http}
     ```
 
 7. 配置 verdaccio config.yaml
     同 docker 安装方式
-8. 启动
+8. 在 docker-compose.yml 目录中启动
 
     ```sh
     docker-compose up -d
     ```
+
+    - 问题：verdaccio  | cannot open config file /verdaccio/conf/config.yaml: false
 
 ## 其他收货
 
